@@ -1,0 +1,39 @@
+{
+  "$schema": "https://raw.githubusercontent.com/modelcontextprotocol/registry/main/schema/server.json",
+  "name": "waveguard",
+  "display_name": "WaveGuard Anomaly Detection",
+  "description": "Detect anomalies in any data using GPU-accelerated wave physics simulation. Fully stateless — send training + test data in one call. Works on JSON, numbers, text, time series, images.",
+  "repository": {
+    "url": "https://github.com/gpartin/WaveGuardClient",
+    "source": "github"
+  },
+  "version_detail": {
+    "version": "2.0.0",
+    "release_date": "2026-02-24"
+  },
+  "packages": [
+    {
+      "registry_name": "pypi",
+      "name": "WaveGuardClient",
+      "version": "2.0.0"
+    }
+  ],
+  "remotes": [
+    {
+      "transport_type": "http",
+      "url": "https://gpartin--waveguard-api-fastapi-app.modal.run/mcp"
+    }
+  ],
+  "tools": [
+    {
+      "name": "waveguard_scan",
+      "description": "Detect anomalies in data using GPU-accelerated wave physics simulation. Send training data (normal examples) and test data (samples to check) in one call. Returns per-sample anomaly scores, confidence levels, and top features explaining each anomaly."
+    },
+    {
+      "name": "waveguard_health",
+      "description": "Check WaveGuard API health, GPU availability, version, and engine status."
+    }
+  ],
+  "categories": ["anomaly-detection", "machine-learning", "security", "monitoring"],
+  "tags": ["anomaly-detection", "gpu", "wave-physics", "mcp", "python", "stateless"]
+}

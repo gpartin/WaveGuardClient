@@ -1,0 +1,25 @@
+# Smithery configuration for WaveGuard MCP Server
+# https://smithery.ai/docs/config
+
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    properties:
+      waveguardApiKey:
+        type: string
+        description: "WaveGuard API key for authentication"
+      waveguardApiUrl:
+        type: string
+        description: "WaveGuard API URL (default: https://gpartin--waveguard-api-fastapi-app.modal.run)"
+        default: "https://gpartin--waveguard-api-fastapi-app.modal.run"
+    required: []
+  commandFunction: |-
+    (config) => ({
+      command: "python",
+      args: ["mcp_server/server.py"],
+      env: {
+        WAVEGUARD_API_KEY: config.waveguardApiKey ?? "",
+        WAVEGUARD_API_URL: config.waveguardApiUrl ?? "https://gpartin--waveguard-api-fastapi-app.modal.run"
+      }
+    })
