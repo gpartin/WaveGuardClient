@@ -14,6 +14,7 @@
 
 <p align="center">
   <a href="#quickstart">Quickstart</a> •
+  <a href="#use-cases">Use Cases</a> •
   <a href="#examples">Examples</a> •
   <a href="docs/api-reference.md">API Reference</a> •
   <a href="docs/mcp-integration.md">MCP / Claude</a> •
@@ -24,13 +25,24 @@
 
 ## What is WaveGuard?
 
-WaveGuard detects anomalies by encoding your data onto a 3D lattice and running GPU-accelerated **wave physics simulations**. Normal data produces stable wave patterns; anomalies produce divergent ones.
+WaveGuard is a **general-purpose anomaly detection API**. Send it any data — server metrics, financial transactions, log files, sensor readings, time series — and get back anomaly scores, confidence levels, and explanations of *which features* triggered the alert.
 
-**No training pipelines. No model management. No state.**
+**No training pipelines. No model management. No state. One API call.**
 
 ```
-Your data → 3D wave simulation on GPU → Anomaly scores back
+Your data  →  WaveGuard API (GPU)  →  Anomaly scores + explanations
 ```
+
+Under the hood, it uses GPU-accelerated wave physics instead of machine learning. You don't need to know or care about the physics — it's all server-side.
+
+<details>
+<summary><strong>How does it actually work?</strong></summary>
+
+Your data is encoded onto a 32³ lattice and run through coupled wave equation simulations on GPU. Normal data produces stable wave patterns; anomalies produce divergent ones. A 52-dimensional statistical fingerprint is compared between training and test data. Everything is torn down after each call — nothing is stored.
+
+The key advantage over ML: no training data requirements (2+ samples is enough), no model drift, no retraining, no hyperparameter tuning. Same API call works on structured data, text, numbers, and time series.
+
+</details>
 
 ## Install
 
@@ -42,6 +54,10 @@ That's it. The only dependency is `requests`. All physics runs server-side on GP
 
 ## Quickstart
 
+The same `scan()` call works on any data type. Here are three different industries — same API:
+
+### Detect a compromised server
+
 ```python
 from waveguard import WaveGuard
 
@@ -52,61 +68,93 @@ result = wg.scan(
         {"cpu": 45, "memory": 62, "disk_io": 120, "errors": 0},
         {"cpu": 48, "memory": 63, "disk_io": 115, "errors": 0},
         {"cpu": 42, "memory": 61, "disk_io": 125, "errors": 1},
-        {"cpu": 50, "memory": 64, "disk_io": 118, "errors": 0},
     ],
     test=[
-        {"cpu": 46, "memory": 62, "disk_io": 119, "errors": 0},    # normal
-        {"cpu": 99, "memory": 95, "disk_io": 800, "errors": 150},   # anomaly
+        {"cpu": 46, "memory": 62, "disk_io": 119, "errors": 0},    # ✅ normal
+        {"cpu": 99, "memory": 95, "disk_io": 800, "errors": 150},   # 🚨 anomaly
     ],
 )
 
-print(f"Anomalies: {result.summary.anomalies_found}/{result.summary.total_test_samples}")
-
 for r in result.results:
-    status = "🚨 ANOMALY" if r.is_anomaly else "✅ Normal"
-    print(f"  {status}  score={r.score:.1f}  confidence={r.confidence:.0%}")
+    print(f"{'🚨' if r.is_anomaly else '✅'}  score={r.score:.1f}  confidence={r.confidence:.0%}")
 ```
 
-**Output:**
+### Flag a fraudulent transaction
+
+```python
+result = wg.scan(
+    training=[
+        {"amount": 74.50, "items": 3, "session_sec": 340, "returning": 1},
+        {"amount": 52.00, "items": 2, "session_sec": 280, "returning": 1},
+        {"amount": 89.99, "items": 4, "session_sec": 410, "returning": 0},
+    ],
+    test=[
+        {"amount": 68.00, "items": 2, "session_sec": 300, "returning": 1},     # ✅ normal
+        {"amount": 4200.00, "items": 25, "session_sec": 8, "returning": 0},     # 🚨 fraud
+    ],
+)
 ```
-Anomalies: 1/2
-  ✅ Normal   score=0.5  confidence=10%
-  🚨 ANOMALY  score=8.3  confidence=95%
+
+### Catch a security event in logs
+
+```python
+result = wg.scan(
+    training=[
+        "2026-02-24 10:15:03 INFO  Request processed in 45ms [200 OK]",
+        "2026-02-24 10:15:04 INFO  Request processed in 52ms [200 OK]",
+        "2026-02-24 10:15:05 INFO  Cache hit ratio=0.94 ttl=300s",
+    ],
+    test=[
+        "2026-02-24 10:20:03 INFO  Request processed in 48ms [200 OK]",                  # ✅ normal
+        "2026-02-24 10:20:04 CRIT  xmrig consuming 98% CPU, port 45678 open",             # 🚨 crypto miner
+        "2026-02-24 10:20:05 WARN  GET /api/users?id=1;DROP TABLE users-- from 185.x.x",  # 🚨 SQL injection
+    ],
+    encoder_type="text",
+)
 ```
 
-## How It Works
+**Same client. Same `scan()` call. Any data.**
 
-1. Send **training** data (examples of normal) + **test** data (what to check)
-2. The API encodes both onto a 32³ lattice and runs coupled wave equations
-3. Statistical fingerprints are compared — anomalies produce divergent wave patterns
-4. You get back per-sample scores, confidence, and the **top features explaining why**
-5. Everything tears down — **nothing is stored between calls**
+## Use Cases
 
-<details>
-<summary><strong>What data types are supported?</strong></summary>
+WaveGuard works on **any structured, numeric, or text data**. If you can describe "normal," it can detect deviations.
 
-All of them. Auto-detected from data shape:
+| Industry | What You Scan | What It Catches |
+|----------|---------------|------------------|
+| **DevOps** | Server metrics (CPU, memory, latency) | Memory leaks, DDoS attacks, runaway processes |
+| **Fintech** | Transactions (amount, velocity, location) | Fraud, money laundering, account takeover |
+| **Security** | Log files, access events | SQL injection, crypto miners, privilege escalation |
+| **IoT / Manufacturing** | Sensor readings (temp, pressure, vibration) | Equipment failure, calibration drift |
+| **E-commerce** | User behavior (session time, cart, clicks) | Bot traffic, bulk purchase fraud, scraping |
+| **Healthcare** | Lab results, vitals, biomarkers | Abnormal readings, data entry errors |
+| **Time Series** | Metric windows (latency, throughput) | Spikes, flatlines, seasonal breaks |
 
-| Type | Example |
-|------|---------|
-| JSON objects | `{"cpu": 45, "memory": 62}` |
-| Numeric arrays | `[1.0, 1.2, 5.8, 1.1]` |
-| Text strings | `"ERROR segfault at 0x0"` |
-| Time series | `[100, 102, 98, 105, 99]` |
+**The API doesn't know your domain.** It just knows what "normal" looks like (your training data) and flags anything that deviates. This makes it general — you bring the context, it brings the detection.
 
-</details>
+### Supported Data Types
+
+All auto-detected from data shape. No configuration needed:
+
+| Type | Example | Use When |
+|------|---------|----------|
+| JSON objects | `{"cpu": 45, "memory": 62}` | Structured records with named fields |
+| Numeric arrays | `[1.0, 1.2, 5.8, 1.1]` | Feature vectors, embeddings |
+| Text strings | `"ERROR segfault at 0x0"` | Logs, messages, free text |
+| Time series | `[100, 102, 98, 105, 99]` | Metric windows, sequential readings |
 
 ## Examples
 
-| # | Example | Use Case |
-|---|---------|----------|
-| 01 | [Quickstart](examples/01_quickstart.py) | Minimal working example |
-| 02 | [Server Monitoring](examples/02_server_monitoring.py) | Detect infra anomalies (memory leak, DDoS) |
-| 03 | [Log Analysis](examples/03_log_analysis.py) | Flag unusual log lines (errors, attacks) |
-| 04 | [Time Series](examples/04_time_series.py) | Detect spikes/flatlines in metric windows |
-| 05 | [Azure Migration](examples/05_azure_migration.py) | Drop-in Azure Anomaly Detector replacement |
-| 06 | [Batch Scanning](examples/06_batch_scanning.py) | Scan 20+ samples efficiently in one call |
-| 07 | [Error Handling](examples/07_error_handling.py) | Retry logic, exception handling patterns |
+Every example is a runnable Python script. They span **6 industries and 4 data types** to show WaveGuard isn't tied to one domain:
+
+| # | Example | Industry | Data Type | What It Shows |
+|---|---------|----------|-----------|---------------|
+| 01 | [Quickstart](examples/01_quickstart.py) | General | JSON | Minimal scan in 10 lines |
+| 02 | [Server Monitoring](examples/02_server_monitoring.py) | DevOps | JSON | Memory leak + DDoS detection |
+| 03 | [Log Analysis](examples/03_log_analysis.py) | Security | Text | SQL injection, crypto miner, stack traces |
+| 04 | [Time Series](examples/04_time_series.py) | Monitoring | Numeric | Latency spikes, flatline detection |
+| 05 | [Azure Migration](examples/05_azure_migration.py) | Enterprise | JSON | Side-by-side Azure replacement |
+| 06 | [Batch Scanning](examples/06_batch_scanning.py) | E-commerce | JSON | 20 transactions, fraud flagging |
+| 07 | [Error Handling](examples/07_error_handling.py) | Production | — | Retry logic, exponential backoff |
 
 ## MCP Server (Claude Desktop)
 
