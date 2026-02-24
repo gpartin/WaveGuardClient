@@ -3,7 +3,7 @@
   <img src="https://img.shields.io/badge/API-v2.0.0_stateless-brightgreen?style=for-the-badge" alt="v2.0.0">
   <img src="https://img.shields.io/badge/GPU-CUDA_accelerated-76B900?style=for-the-badge&logo=nvidia" alt="CUDA">
   <img src="https://img.shields.io/badge/MCP-Claude_Desktop-orange?style=for-the-badge" alt="MCP">
-  <a href="https://smithery.ai/server/gpartin/WaveGuardClient"><img src="https://smithery.ai/badge/gpartin/WaveGuardClient" alt="Smithery"></a>
+  <a href="https://smithery.ai/servers/emergentphysicslab/waveguard"><img src="https://smithery.ai/badge/emergentphysicslab/waveguard" alt="Smithery"></a>
 </p>
 
 <h1 align="center">WaveGuard Python SDK</h1>
@@ -265,9 +265,7 @@ pytest
 - **Live API**: https://gpartin--waveguard-api-fastapi-app.modal.run
 - **Interactive Docs (Swagger)**: https://gpartin--waveguard-api-fastapi-app.modal.run/docs
 - **PyPI**: https://pypi.org/project/WaveGuardClient/
-- **Smithery**: https://smithery.ai/server/gpartin/WaveGuardClient
-- **Glama MCP**: https://glama.ai/mcp/servers/@gpartin/WaveGuardClient
-- **mcp.so**: https://mcp.so/server/WaveGuardClient/gpartin
+- **Smithery**: https://smithery.ai/servers/emergentphysicslab/waveguard
 
 ## License
 
