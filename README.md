@@ -263,7 +263,7 @@ pytest
 
 - **Live API**: https://gpartin--waveguard-api-fastapi-app.modal.run
 - **Interactive Docs (Swagger)**: https://gpartin--waveguard-api-fastapi-app.modal.run/docs
-- **Engine + Research**: https://github.com/gpartin/LFMAnomalyDetection
+- **PyPI**: https://pypi.org/project/waveguard/
 
 ## License
 
