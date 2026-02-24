@@ -5,7 +5,7 @@ Get anomaly detection running in under a minute.
 ## Install
 
 ```bash
-pip install waveguard
+pip install WaveGuardClient
 ```
 
 Or install from source:

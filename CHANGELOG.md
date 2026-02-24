@@ -12,7 +12,7 @@ All notable changes to this project will be documented in this file.
 - 7 runnable examples covering all major use cases
 - Documentation: getting started, API reference, MCP integration, Azure migration guide
 - Test suite with mocked HTTP responses (runs offline)
-- `pip install waveguard` with minimal dependencies (just `requests`)
+- `pip install WaveGuardClient` with minimal dependencies (just `requests`)
 
 ### Key Features
 - **One-call API**: Send training + test data → get anomaly scores back

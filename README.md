@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://img.shields.io/pypi/v/waveguard?style=for-the-badge&color=blueviolet" alt="PyPI">
+  <img src="https://img.shields.io/pypi/v/WaveGuardClient?style=for-the-badge&color=blueviolet" alt="PyPI">
   <img src="https://img.shields.io/badge/API-v2.0.0_stateless-brightgreen?style=for-the-badge" alt="v2.0.0">
   <img src="https://img.shields.io/badge/GPU-CUDA_accelerated-76B900?style=for-the-badge&logo=nvidia" alt="CUDA">
   <img src="https://img.shields.io/badge/MCP-Claude_Desktop-orange?style=for-the-badge" alt="MCP">
@@ -47,7 +47,7 @@ The key advantage over ML: no training data requirements (2+ samples is enough),
 ## Install
 
 ```bash
-pip install waveguard
+pip install WaveGuardClient
 ```
 
 That's it. The only dependency is `requests`. All physics runs server-side on GPU.
@@ -263,7 +263,7 @@ pytest
 
 - **Live API**: https://gpartin--waveguard-api-fastapi-app.modal.run
 - **Interactive Docs (Swagger)**: https://gpartin--waveguard-api-fastapi-app.modal.run/docs
-- **PyPI**: https://pypi.org/project/waveguard/
+- **PyPI**: https://pypi.org/project/WaveGuardClient/
 
 ## License
 

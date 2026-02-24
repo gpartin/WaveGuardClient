@@ -19,7 +19,7 @@
 ### 1. Install the SDK
 
 ```bash
-pip install waveguard
+pip install WaveGuardClient
 ```
 
 ### 2. Replace the client
