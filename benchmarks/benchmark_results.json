@@ -1,0 +1,323 @@
+{
+  "timestamp": "2026-02-24 17:52:03",
+  "methods": [
+    "WaveGuard",
+    "IsolationForest",
+    "LOF",
+    "OneClassSVM"
+  ],
+  "scenarios": [
+    {
+      "scenario": "Server Metrics (IT Ops)",
+      "results": {
+        "WaveGuard": {
+          "precision": 0.75,
+          "recall": 0.9,
+          "f1": 0.8182,
+          "auc_roc": 0.945,
+          "tp": 9,
+          "fp": 3,
+          "tn": 17,
+          "fn": 1,
+          "latency_ms": 8552.6
+        },
+        "IsolationForest": {
+          "precision": 0.5556,
+          "recall": 1.0,
+          "f1": 0.7143,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 8,
+          "tn": 12,
+          "fn": 0,
+          "latency_ms": 141.3
+        },
+        "LOF": {
+          "precision": 0.7692,
+          "recall": 1.0,
+          "f1": 0.8696,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 3,
+          "tn": 17,
+          "fn": 0,
+          "latency_ms": 2.0
+        },
+        "OneClassSVM": {
+          "precision": 0.4545,
+          "recall": 1.0,
+          "f1": 0.625,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 12,
+          "tn": 8,
+          "fn": 0,
+          "latency_ms": 1.0
+        }
+      },
+      "winner_f1": "LOF"
+    },
+    {
+      "scenario": "Financial Fraud",
+      "results": {
+        "WaveGuard": {
+          "precision": 1.0,
+          "recall": 0.4,
+          "f1": 0.5714,
+          "auc_roc": 0.7,
+          "tp": 4,
+          "fp": 0,
+          "tn": 20,
+          "fn": 6,
+          "latency_ms": 7350.6
+        },
+        "IsolationForest": {
+          "precision": 0.5882,
+          "recall": 1.0,
+          "f1": 0.7407,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 7,
+          "tn": 13,
+          "fn": 0,
+          "latency_ms": 139.5
+        },
+        "LOF": {
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 6,
+          "tn": 14,
+          "fn": 0,
+          "latency_ms": 1.8
+        },
+        "OneClassSVM": {
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 6,
+          "tn": 14,
+          "fn": 0,
+          "latency_ms": 0.7
+        }
+      },
+      "winner_f1": "LOF"
+    },
+    {
+      "scenario": "IoT Sensor (Industrial)",
+      "results": {
+        "WaveGuard": {
+          "precision": 1.0,
+          "recall": 0.3,
+          "f1": 0.4615,
+          "auc_roc": 0.65,
+          "tp": 3,
+          "fp": 0,
+          "tn": 20,
+          "fn": 7,
+          "latency_ms": 8380.8
+        },
+        "IsolationForest": {
+          "precision": 0.5263,
+          "recall": 1.0,
+          "f1": 0.6897,
+          "auc_roc": 0.975,
+          "tp": 10,
+          "fp": 9,
+          "tn": 11,
+          "fn": 0,
+          "latency_ms": 142.2
+        },
+        "LOF": {
+          "precision": 0.5263,
+          "recall": 1.0,
+          "f1": 0.6897,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 9,
+          "tn": 11,
+          "fn": 0,
+          "latency_ms": 1.9
+        },
+        "OneClassSVM": {
+          "precision": 0.4762,
+          "recall": 1.0,
+          "f1": 0.6452,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 11,
+          "tn": 9,
+          "fn": 0,
+          "latency_ms": 0.8
+        }
+      },
+      "winner_f1": "IsolationForest"
+    },
+    {
+      "scenario": "Network Traffic (Security)",
+      "results": {
+        "WaveGuard": {
+          "precision": 0.8889,
+          "recall": 0.8,
+          "f1": 0.8421,
+          "auc_roc": 0.9,
+          "tp": 8,
+          "fp": 1,
+          "tn": 19,
+          "fn": 2,
+          "latency_ms": 7520.5
+        },
+        "IsolationForest": {
+          "precision": 0.4348,
+          "recall": 1.0,
+          "f1": 0.6061,
+          "auc_roc": 0.915,
+          "tp": 10,
+          "fp": 13,
+          "tn": 7,
+          "fn": 0,
+          "latency_ms": 139.9
+        },
+        "LOF": {
+          "precision": 0.625,
+          "recall": 1.0,
+          "f1": 0.7692,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 6,
+          "tn": 14,
+          "fn": 0,
+          "latency_ms": 2.1
+        },
+        "OneClassSVM": {
+          "precision": 0.4348,
+          "recall": 1.0,
+          "f1": 0.6061,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 13,
+          "tn": 7,
+          "fn": 0,
+          "latency_ms": 0.6
+        }
+      },
+      "winner_f1": "WaveGuard"
+    },
+    {
+      "scenario": "Time-Series (Monitoring)",
+      "results": {
+        "WaveGuard": {
+          "precision": 1.0,
+          "recall": 0.3,
+          "f1": 0.4615,
+          "auc_roc": 0.65,
+          "tp": 3,
+          "fp": 0,
+          "tn": 20,
+          "fn": 7,
+          "latency_ms": 8529.9
+        },
+        "IsolationForest": {
+          "precision": 0.5714,
+          "recall": 0.8,
+          "f1": 0.6667,
+          "auc_roc": 0.855,
+          "tp": 8,
+          "fp": 6,
+          "tn": 14,
+          "fn": 2,
+          "latency_ms": 299.6
+        },
+        "LOF": {
+          "precision": 0.6667,
+          "recall": 1.0,
+          "f1": 0.8,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 5,
+          "tn": 15,
+          "fn": 0,
+          "latency_ms": 1.9
+        },
+        "OneClassSVM": {
+          "precision": 0.5,
+          "recall": 1.0,
+          "f1": 0.6667,
+          "auc_roc": 1.0,
+          "tp": 10,
+          "fp": 10,
+          "tn": 10,
+          "fn": 0,
+          "latency_ms": 1.0
+        }
+      },
+      "winner_f1": "LOF"
+    },
+    {
+      "scenario": "Sparse Features (Logs)",
+      "results": {
+        "WaveGuard": {
+          "precision": 0.7273,
+          "recall": 0.8,
+          "f1": 0.7619,
+          "auc_roc": 0.8275,
+          "tp": 8,
+          "fp": 3,
+          "tn": 17,
+          "fn": 2,
+          "latency_ms": 8067.2
+        },
+        "IsolationForest": {
+          "precision": 0.9,
+          "recall": 0.9,
+          "f1": 0.9,
+          "auc_roc": 0.985,
+          "tp": 9,
+          "fp": 1,
+          "tn": 19,
+          "fn": 1,
+          "latency_ms": 321.0
+        },
+        "LOF": {
+          "precision": 0.75,
+          "recall": 0.9,
+          "f1": 0.8182,
+          "auc_roc": 0.95,
+          "tp": 9,
+          "fp": 3,
+          "tn": 17,
+          "fn": 1,
+          "latency_ms": 1674.1
+        },
+        "OneClassSVM": {
+          "precision": 0.6923,
+          "recall": 0.9,
+          "f1": 0.7826,
+          "auc_roc": 0.95,
+          "tp": 9,
+          "fp": 4,
+          "tn": 16,
+          "fn": 1,
+          "latency_ms": 0.8
+        }
+      },
+      "winner_f1": "IsolationForest"
+    }
+  ],
+  "method_wins": {
+    "WaveGuard": 1,
+    "IsolationForest": 2,
+    "LOF": 3,
+    "OneClassSVM": 0
+  },
+  "method_avg_f1": {
+    "WaveGuard": 0.6528,
+    "IsolationForest": 0.7196,
+    "LOF": 0.786,
+    "OneClassSVM": 0.6825
+  }
+}
