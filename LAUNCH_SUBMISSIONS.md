@@ -87,7 +87,7 @@ result = wg.scan(
 )
 ```
 
-Free tier: 100 scans/month, GPU-accelerated, no API key required.
+Free tier: 10 scans/month, GPU-accelerated, no API key required.
 
 GitHub: https://github.com/gpartin/WaveGuardClient
 Benchmarks: https://github.com/gpartin/WaveGuardClient/tree/main/benchmarks
@@ -122,7 +122,7 @@ Built an anomaly detection API that uses wave physics simulation instead of ML. 
 - GPU-accelerated (NVIDIA T4)
 - Works on any data type (JSON, text, numbers, time-series)
 - Available as an MCP tool for AI agents
-- Free tier: 100 scans/month, no API key needed
+- Free tier: 10 scans/month, no API key needed
 
 `pip install WaveGuardClient`
 
@@ -159,7 +159,7 @@ if result.results[0].is_anomaly:
 
 We tested it against bearing failures, seal leaks, motor overloads, and voltage sags. It catches catastrophic failures reliably with zero false alarms. Subtle faults (like slow pressure leaks) sometimes slip through — that's the tradeoff for no false pages at 3am.
 
-Free tier: 100 scans/month, GPU-accelerated.
+Free tier: 10 scans/month, GPU-accelerated.
 `pip install WaveGuardClient`
 
 Full example: https://github.com/gpartin/WaveGuardClient/blob/main/examples/iot_predictive_maintenance.py
@@ -199,7 +199,7 @@ Claude calls `waveguard_scan`, gets back anomaly flags, confidence scores, and w
 
 **Why physics instead of ML?** Zero config. No contamination fraction, no n_neighbors, no nu parameter. The agent just sends data and gets results. 90% precision means very few false alarms.
 
-Free tier: 100 scans/month, GPU-accelerated, no API key.
+Free tier: 10 scans/month, GPU-accelerated, no API key.
 
 PyPI: `pip install WaveGuardClient`
 GitHub: https://github.com/gpartin/WaveGuardClient
