@@ -338,7 +338,9 @@ class WaveGuard:
             )
         if r.status_code == 429:
             raise RateLimitError(
-                f"Rate or tier limit exceeded: {r.text}",
+                f"Rate or tier limit exceeded. "
+                f"Upgrade at {RateLimitError.UPGRADE_URL}\n"
+                f"Detail: {r.text}",
                 status_code=429,
                 detail=r.text,
             )

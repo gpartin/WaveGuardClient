@@ -50,9 +50,11 @@ class ValidationError(WaveGuardError):
 class RateLimitError(WaveGuardError):
     """Rate limit or subscription tier limit exceeded (HTTP 429).
 
-    Back off and retry, or upgrade your tier.
+    Back off and retry, or upgrade your tier at
+    https://rapidapi.com/gpartin/api/waveguard
     """
-    pass
+
+    UPGRADE_URL = "https://rapidapi.com/gpartin/api/waveguard"
 
 
 class ServerError(WaveGuardError):
