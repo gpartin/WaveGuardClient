@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.3.0] — 2026-02-24
+
+### Added
+- **Automatic retry with exponential backoff**: `max_retries=2` by default.
+  Retries on 429, 500, 502, 503, 504, connection errors, and timeouts.
+  Respects server `Retry-After` header.
+- **Environment variable auto-read**: SDK reads `WAVEGUARD_API_KEY` from env
+  if no `api_key` is passed. Matches stripe/openai SDK pattern.
+- **Debug logging**: `logging.getLogger("waveguard")` for request-level
+  diagnostics. Enable with `logging.basicConfig(level=logging.DEBUG)`.
+- **MCP console script**: `pip install WaveGuardClient[mcp]` now installs
+  `waveguard-mcp` command. Works with `uvx --from WaveGuardClient waveguard-mcp`.
+
+### Fixed
+- MCP server was excluded from PyPI package — `mcp_server/` now included
+- Non-JSON 200 responses now raise `WaveGuardError` instead of silently
+  returning zeroed results
+
+### Improved
+- Error messages now suggest `WAVEGUARD_API_KEY` env var on auth failures
+- Clearer timeout error messages include retry count
+
 ## [2.2.0] — 2026-02-24
 
 ### Added

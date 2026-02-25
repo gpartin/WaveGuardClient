@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "WaveGuardClient"
-version = "2.2.0"
+version = "2.3.0"
 description = "Python SDK for WaveGuard — physics-based anomaly detection API"
 readme = "README.md"
 license = "MIT"
@@ -59,9 +59,12 @@ Repository = "https://github.com/gpartin/WaveGuardClient"
 Issues = "https://github.com/gpartin/WaveGuardClient/issues"
 API = "https://gpartin--waveguard-api-fastapi-app.modal.run/docs"
 
+[project.scripts]
+waveguard-mcp = "mcp_server.server:main"
+
 [tool.setuptools.packages.find]
-include = ["waveguard*"]
-exclude = ["tests*", "examples*", "docs*", "mcp_server*"]
+include = ["waveguard*", "mcp_server*"]
+exclude = ["tests*", "examples*", "docs*"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

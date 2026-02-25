@@ -26,6 +26,10 @@ Usage::
 
 from __future__ import annotations
 
+import logging
+import os
+import time
+import random
 import requests
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
@@ -38,7 +42,9 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "2.2.0"
+__version__ = "2.3.0"
+
+logger = logging.getLogger("waveguard")
 
 
 # ─────────────────────────────── Data Classes ─────────────────────────────
@@ -140,17 +146,23 @@ class WaveGuard:
 
     Parameters
     ----------
-    api_key : str
-        Your WaveGuard API key.
+    api_key : str, optional
+        Your WaveGuard API key.  If not provided, reads from the
+        ``WAVEGUARD_API_KEY`` environment variable.  Free-tier scans
+        work without a key (rate-limited).
     base_url : str, optional
         API base URL.  Defaults to the production Modal endpoint.
     timeout : float, optional
         Request timeout in seconds.  Default ``120`` (generous for GPU
         cold starts).
+    max_retries : int, optional
+        Number of automatic retries on transient errors (429, 500, 502,
+        503, 504, connection errors, timeouts).  Default ``2``.
+        Set to ``0`` to disable retries.
 
     Examples
     --------
-    >>> wg = WaveGuard(api_key="wg_test_key")
+    >>> wg = WaveGuard()  # reads WAVEGUARD_API_KEY from env
     >>> result = wg.scan(
     ...     training=[{"a": 1}, {"a": 2}, {"a": 3}],
     ...     test=[{"a": 100}],
@@ -161,22 +173,27 @@ class WaveGuard:
 
     DEFAULT_URL = "https://gpartin--waveguard-api-fastapi-app.modal.run"
 
+    # Status codes that trigger automatic retry
+    _RETRYABLE_STATUS = {429, 500, 502, 503, 504}
+
     def __init__(
         self,
         api_key: Optional[str] = None,
         base_url: str = DEFAULT_URL,
         timeout: float = 120.0,
+        max_retries: int = 2,
     ):
-        self.api_key = api_key
+        self.api_key = api_key or os.environ.get("WAVEGUARD_API_KEY")
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
+        self.max_retries = max_retries
         self._session = requests.Session()
         headers = {
             "Content-Type": "application/json",
             "User-Agent": f"waveguard-python/{__version__}",
         }
-        if api_key:
-            headers["X-API-Key"] = api_key
+        if self.api_key:
+            headers["X-API-Key"] = self.api_key
         self._session.headers.update(headers)
 
     # ── Core API ──────────────────────────────────────────────────────
@@ -302,66 +319,127 @@ class WaveGuard:
     # ── Internal HTTP ─────────────────────────────────────────────────
 
     def _post(self, path: str, body: dict) -> dict:
-        url = f"{self.base_url}{path}"
-        try:
-            r = self._session.post(url, json=body, timeout=self.timeout)
-        except requests.ConnectionError:
-            raise WaveGuardError(f"Cannot connect to {self.base_url}")
-        except requests.Timeout:
-            raise WaveGuardError(
-                f"Request timed out after {self.timeout}s"
-            )
-        return self._handle(r)
+        return self._request("POST", path, json=body)
 
     def _get(self, path: str) -> dict:
-        url = f"{self.base_url}{path}"
-        try:
-            r = self._session.get(url, timeout=self.timeout)
-        except requests.ConnectionError:
-            raise WaveGuardError(f"Cannot connect to {self.base_url}")
-        except requests.Timeout:
-            raise WaveGuardError(
-                f"Request timed out after {self.timeout}s"
-            )
-        return self._handle(r)
+        return self._request("GET", path)
 
-    def _handle(self, r: requests.Response) -> dict:
-        if r.status_code == 401:
-            raise AuthenticationError(
-                "Invalid or missing API key",
-                status_code=401,
-                detail=r.text,
-            )
-        if r.status_code == 422:
-            raise ValidationError(
-                f"Validation failed: {r.text}",
-                status_code=422,
-                detail=r.text,
-            )
-        if r.status_code == 429:
-            raise RateLimitError(
-                f"Rate or tier limit exceeded. "
-                f"Upgrade at {RateLimitError.UPGRADE_URL}\n"
-                f"Detail: {r.text}",
-                status_code=429,
-                detail=r.text,
-            )
-        if r.status_code >= 500:
-            raise ServerError(
-                f"Server error {r.status_code}: {r.text}",
-                status_code=r.status_code,
-                detail=r.text,
-            )
-        if r.status_code >= 400:
-            raise WaveGuardError(
-                f"API error {r.status_code}: {r.text}",
-                status_code=r.status_code,
-                detail=r.text,
-            )
-        try:
-            return r.json()
-        except ValueError:
-            return {"raw": r.text}
+    def _request(
+        self,
+        method: str,
+        path: str,
+        json: Optional[dict] = None,
+    ) -> dict:
+        """Execute an HTTP request with automatic retry and backoff."""
+        url = f"{self.base_url}{path}"
+        last_exc: Optional[Exception] = None
+
+        for attempt in range(1 + self.max_retries):
+            try:
+                logger.debug(
+                    "%s %s (attempt %d/%d)",
+                    method, path, attempt + 1, 1 + self.max_retries,
+                )
+                r = self._session.request(
+                    method, url, json=json, timeout=self.timeout
+                )
+
+                # Non-retryable errors — raise immediately
+                if r.status_code in (401, 403):
+                    raise AuthenticationError(
+                        "Invalid or missing API key. "
+                        "Set WAVEGUARD_API_KEY or pass api_key= to WaveGuard().",
+                        status_code=r.status_code,
+                        detail=r.text,
+                    )
+                if r.status_code == 422:
+                    raise ValidationError(
+                        f"Validation failed: {r.text}",
+                        status_code=422,
+                        detail=r.text,
+                    )
+
+                # Retryable errors
+                if r.status_code in self._RETRYABLE_STATUS:
+                    retry_after = r.headers.get("Retry-After")
+                    if r.status_code == 429 and attempt == self.max_retries:
+                        raise RateLimitError(
+                            f"Rate or tier limit exceeded. "
+                            f"Upgrade at {RateLimitError.UPGRADE_URL}\n"
+                            f"Detail: {r.text}",
+                            status_code=429,
+                            detail=r.text,
+                        )
+                    if attempt < self.max_retries:
+                        delay = self._backoff_delay(attempt, retry_after)
+                        logger.info(
+                            "Retryable %d from %s — retrying in %.1fs",
+                            r.status_code, path, delay,
+                        )
+                        time.sleep(delay)
+                        continue
+                    # Final attempt — raise appropriate error
+                    if r.status_code >= 500:
+                        raise ServerError(
+                            f"Server error {r.status_code} after "
+                            f"{self.max_retries} retries",
+                            status_code=r.status_code,
+                            detail=r.text,
+                        )
+
+                # Other 4xx errors
+                if r.status_code >= 400:
+                    raise WaveGuardError(
+                        f"API error {r.status_code}: {r.text}",
+                        status_code=r.status_code,
+                        detail=r.text,
+                    )
+
+                # Success
+                try:
+                    return r.json()
+                except ValueError:
+                    raise WaveGuardError(
+                        f"Unexpected non-JSON response from {path}",
+                        status_code=r.status_code,
+                        detail=r.text,
+                    )
+
+            except (requests.ConnectionError, requests.Timeout) as e:
+                last_exc = e
+                if attempt < self.max_retries:
+                    delay = self._backoff_delay(attempt)
+                    logger.info(
+                        "%s on %s — retrying in %.1fs",
+                        type(e).__name__, path, delay,
+                    )
+                    time.sleep(delay)
+                    continue
+                if isinstance(e, requests.Timeout):
+                    raise WaveGuardError(
+                        f"Request timed out after {self.timeout}s "
+                        f"({self.max_retries} retries exhausted)"
+                    ) from e
+                raise WaveGuardError(
+                    f"Cannot connect to {self.base_url} "
+                    f"({self.max_retries} retries exhausted)"
+                ) from e
+
+        # Should not reach here, but just in case
+        raise WaveGuardError("Request failed") from last_exc
+
+    @staticmethod
+    def _backoff_delay(
+        attempt: int, retry_after: Optional[str] = None
+    ) -> float:
+        """Exponential backoff with jitter, respecting Retry-After."""
+        if retry_after:
+            try:
+                return min(float(retry_after), 60.0)
+            except ValueError:
+                pass
+        base = min(2 ** attempt, 30)  # 1, 2, 4, 8, ... capped at 30s
+        return base + random.uniform(0, base * 0.5)
 
     def __repr__(self) -> str:
         return f"WaveGuard(base_url='{self.base_url}')"

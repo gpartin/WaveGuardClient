@@ -35,6 +35,7 @@ def _mock_response(status_code=200, json_data=None, text=""):
     resp.status_code = status_code
     resp.text = text or json.dumps(json_data or {})
     resp.json.return_value = json_data or {}
+    resp.headers = {}
     return resp
 
 
@@ -92,10 +93,10 @@ class TestScan:
     @patch("waveguard.client.requests.Session")
     def test_scan_parses_results(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(200, SCAN_RESPONSE)
+        session.request.return_value = _mock_response(200, SCAN_RESPONSE)
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         result = wg.scan(
             training=[{"a": 1}, {"a": 2}, {"a": 3}],
             test=[{"a": 2}, {"a": 100}],
@@ -113,10 +114,10 @@ class TestScan:
     @patch("waveguard.client.requests.Session")
     def test_scan_top_features(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(200, SCAN_RESPONSE)
+        session.request.return_value = _mock_response(200, SCAN_RESPONSE)
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         result = wg.scan(training=[{"a": 1}, {"a": 2}], test=[{"a": 100}])
 
         anomaly = result.results[1]
@@ -127,10 +128,10 @@ class TestScan:
     @patch("waveguard.client.requests.Session")
     def test_scan_sends_optional_params(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(200, SCAN_RESPONSE)
+        session.request.return_value = _mock_response(200, SCAN_RESPONSE)
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         wg.scan(
             training=[{"a": 1}, {"a": 2}],
             test=[{"a": 3}],
@@ -138,7 +139,7 @@ class TestScan:
             sensitivity=0.5,
         )
 
-        call_args = session.post.call_args
+        call_args = session.request.call_args
         body = call_args.kwargs.get("json") or call_args[1].get("json")
         assert body["encoder_type"] == "text"
         assert body["sensitivity"] == 0.5
@@ -151,40 +152,40 @@ class TestErrors:
     @patch("waveguard.client.requests.Session")
     def test_401_raises_auth_error(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(401, text="Unauthorized")
+        session.request.return_value = _mock_response(401, text="Unauthorized")
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="bad-key")
+        wg = WaveGuard(api_key="bad-key", max_retries=0)
         with pytest.raises(AuthenticationError):
             wg.scan(training=[{"a": 1}, {"a": 2}], test=[{"a": 3}])
 
     @patch("waveguard.client.requests.Session")
     def test_422_raises_validation_error(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(422, text="Empty training")
+        session.request.return_value = _mock_response(422, text="Empty training")
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         with pytest.raises(ValidationError):
             wg.scan(training=[], test=[{"a": 1}])
 
     @patch("waveguard.client.requests.Session")
     def test_429_raises_rate_limit_error(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(429, text="Rate limited")
+        session.request.return_value = _mock_response(429, text="Rate limited")
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         with pytest.raises(RateLimitError):
             wg.scan(training=[{"a": 1}, {"a": 2}], test=[{"a": 3}])
 
     @patch("waveguard.client.requests.Session")
     def test_500_raises_server_error(self, mock_session_cls):
         session = MagicMock()
-        session.post.return_value = _mock_response(500, text="Internal error")
+        session.request.return_value = _mock_response(500, text="Internal error")
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         with pytest.raises(ServerError):
             wg.scan(training=[{"a": 1}, {"a": 2}], test=[{"a": 3}])
 
@@ -193,10 +194,10 @@ class TestErrors:
         import requests as req
 
         session = MagicMock()
-        session.post.side_effect = req.ConnectionError("Cannot connect")
+        session.request.side_effect = req.ConnectionError("Cannot connect")
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         with pytest.raises(WaveGuardError, match="Cannot connect"):
             wg.scan(training=[{"a": 1}, {"a": 2}], test=[{"a": 3}])
 
@@ -214,7 +215,7 @@ class TestHealth:
     @patch("waveguard.client.requests.Session")
     def test_health_parses(self, mock_session_cls):
         session = MagicMock()
-        session.get.return_value = _mock_response(
+        session.request.return_value = _mock_response(
             200,
             {
                 "status": "healthy",
@@ -226,7 +227,7 @@ class TestHealth:
         )
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         h = wg.health()
         assert isinstance(h, HealthStatus)
         assert h.status == "healthy"
@@ -235,7 +236,7 @@ class TestHealth:
     @patch("waveguard.client.requests.Session")
     def test_tier_parses(self, mock_session_cls):
         session = MagicMock()
-        session.get.return_value = _mock_response(
+        session.request.return_value = _mock_response(
             200,
             {
                 "tier": "PRO",
@@ -248,7 +249,7 @@ class TestHealth:
         )
         mock_session_cls.return_value = session
 
-        wg = WaveGuard(api_key="test")
+        wg = WaveGuard(api_key="test", max_retries=0)
         t = wg.tier()
         assert isinstance(t, TierInfo)
         assert t.tier == "PRO"
