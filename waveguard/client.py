@@ -162,7 +162,7 @@ class WaveGuard:
 
     def __init__(
         self,
-        api_key: str,
+        api_key: Optional[str] = None,
         base_url: str = DEFAULT_URL,
         timeout: float = 120.0,
     ):
@@ -170,13 +170,13 @@ class WaveGuard:
         self.base_url = base_url.rstrip("/")
         self.timeout = timeout
         self._session = requests.Session()
-        self._session.headers.update(
-            {
-                "X-API-Key": api_key,
-                "Content-Type": "application/json",
-                "User-Agent": f"waveguard-python/{__version__}",
-            }
-        )
+        headers = {
+            "Content-Type": "application/json",
+            "User-Agent": f"waveguard-python/{__version__}",
+        }
+        if api_key:
+            headers["X-API-Key"] = api_key
+        self._session.headers.update(headers)
 
     # ── Core API ──────────────────────────────────────────────────────
 
