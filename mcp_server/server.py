@@ -150,6 +150,55 @@ TOOLS = [
         },
     },
     {
+        "name": "waveguard_scan_timeseries",
+        "description": (
+            "Detect anomalies in time-series data using GPU-accelerated wave "
+            "physics simulation. Send a flat array of numeric values and a "
+            "window size. The tool automatically creates overlapping windows, "
+            "uses the first N as training (normal baseline), and scores the "
+            "remaining windows as test samples. Returns per-window anomaly "
+            "scores, confidence, and p-values.\n\n"
+            "Example: send 100 CPU-usage readings with window_size=10. "
+            "The first 5 windows become training, the rest are tested."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {"type": "number"},
+                    "description": (
+                        "Flat array of numeric time-series values in "
+                        "chronological order."
+                    ),
+                    "minItems": 4,
+                },
+                "window_size": {
+                    "type": "integer",
+                    "description": (
+                        "Number of data points per window (default: 10). "
+                        "Smaller windows = finer resolution."
+                    ),
+                },
+                "test_windows": {
+                    "type": "integer",
+                    "description": (
+                        "Number of trailing windows to test (default: auto, "
+                        "uses last ~40%% of windows)."
+                    ),
+                },
+                "sensitivity": {
+                    "type": "number",
+                    "description": (
+                        "Anomaly threshold multiplier (default: 2.0). Lower = "
+                        "more sensitive. Range: 0.5 to 5.0."
+                    ),
+                },
+            },
+            "required": ["data"],
+        },
+    },
+    {
         "name": "waveguard_health",
         "description": (
             "Check WaveGuard API health, GPU availability, version, and engine "
@@ -167,6 +216,71 @@ TOOLS = [
 # ═══════════════════════════════════════════════════════════════════════════
 # Tool Execution
 # ═══════════════════════════════════════════════════════════════════════════
+
+
+def _execute_timeseries(arguments: dict) -> dict:
+    """Sliding-window timeseries scan via the /v1/scan endpoint."""
+    data = arguments["data"]
+    window = int(arguments.get("window_size", 10))
+    sensitivity = arguments.get("sensitivity", 2.0)
+
+    # Build windows
+    windows = [data[i : i + window] for i in range(0, len(data) - window + 1)]
+    if len(windows) < 3:
+        return {
+            "content": [
+                {
+                    "type": "text",
+                    "text": (
+                        f"Not enough data: {len(data)} points with "
+                        f"window_size={window} gives {len(windows)} windows "
+                        f"(need at least 3)."
+                    ),
+                }
+            ],
+            "isError": True,
+        }
+
+    # Split into training / test
+    test_count = arguments.get("test_windows")
+    if test_count is None:
+        test_count = max(1, len(windows) * 2 // 5)
+    test_count = min(test_count, len(windows) - 2)
+
+    training = windows[: len(windows) - test_count]
+    test = windows[len(windows) - test_count :]
+
+    body: dict = {
+        "training": training,
+        "test": test,
+        "encoder_type": "timeseries",
+        "sensitivity": sensitivity,
+    }
+    result = _api_post("/v1/scan", body)
+
+    # Summarise
+    lines = [
+        f"Time-series scan: {len(windows)} windows "
+        f"(window_size={window}, {len(training)} train, {len(test)} test)",
+        "",
+    ]
+    for i, r in enumerate(result.get("results", [])):
+        idx = len(training) + i
+        is_anom = r.get("is_anomaly", False)
+        conf = r.get("confidence", 0)
+        pval = r.get("p_value", 1.0)
+        marker = "ANOMALY" if is_anom else "Normal"
+        lines.append(
+            f"  Window {idx}: {marker} (confidence: {conf:.0%}, "
+            f"p-value: {pval:.4f})"
+        )
+    summary = "\n".join(lines)
+    return {
+        "content": [
+            {"type": "text", "text": summary},
+            {"type": "text", "text": json.dumps(result, indent=2)},
+        ]
+    }
 
 
 def execute_tool(name: str, arguments: dict) -> dict:
@@ -221,6 +335,9 @@ def execute_tool(name: str, arguments: dict) -> dict:
                 ]
             }
 
+        elif name == "waveguard_scan_timeseries":
+            return _execute_timeseries(arguments)
+
         elif name == "waveguard_health":
             result = _api_get("/v1/health")
             status = (
@@ -254,7 +371,7 @@ class MCPStdioServer:
     def __init__(self) -> None:
         self.server_info = {
             "name": "waveguard",
-            "version": "2.0.0",
+            "version": "2.1.0",
         }
 
     def handle_message(self, msg: dict) -> Optional[dict]:
@@ -318,7 +435,7 @@ class MCPStdioServer:
     def run_stdio(self) -> None:
         """Run the MCP server on stdin/stdout."""
         sys.stderr.write(
-            f"WaveGuard MCP server v2.0.0 started (API: {API_URL})\n"
+            f"WaveGuard MCP server v2.1.0 started (API: {API_URL})\n"
         )
         sys.stderr.flush()
 
@@ -353,7 +470,7 @@ def run_http_server(port: int = 3001) -> None:
         print("HTTP transport requires: pip install fastapi uvicorn")
         sys.exit(1)
 
-    mcp_app = FA(title="WaveGuard MCP Server", version="2.0.0")
+    mcp_app = FA(title="WaveGuard MCP Server", version="2.1.0")
     server = MCPStdioServer()
 
     @mcp_app.post("/mcp")
@@ -364,7 +481,7 @@ def run_http_server(port: int = 3001) -> None:
     async def mcp_tools() -> dict:  # type: ignore[type-arg]
         return {"tools": TOOLS}
 
-    print(f"WaveGuard MCP HTTP server v2.0.0 on port {port}")
+    print(f"WaveGuard MCP HTTP server v2.1.0 on port {port}")
     uvicorn.run(mcp_app, host="0.0.0.0", port=port)
 
 
@@ -374,7 +491,7 @@ def run_http_server(port: int = 3001) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="WaveGuard MCP Server v2.0.0"
+        description="WaveGuard MCP Server v2.1.0"
     )
     parser.add_argument(
         "--http",

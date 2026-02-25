@@ -38,7 +38,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 
 # ─────────────────────────────── Data Classes ─────────────────────────────
@@ -71,6 +71,7 @@ class SampleResult:
     threshold: float
     mahalanobis_distance: float
     confidence: float
+    p_value: float
     top_features: List[FeatureInfo]
     latency_ms: float
     engine: EngineInfo
@@ -272,6 +273,7 @@ class WaveGuard:
                     threshold=r.get("threshold", 0.0),
                     mahalanobis_distance=r.get("mahalanobis_distance", 0.0),
                     confidence=r.get("confidence", 0.0),
+                    p_value=r.get("p_value", 1.0),
                     top_features=features,
                     latency_ms=r.get("latency_ms", 0.0),
                     engine=EngineInfo(
