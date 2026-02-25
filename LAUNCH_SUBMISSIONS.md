@@ -157,7 +157,7 @@ if result.results[0].is_anomaly:
 - One API call: send baseline readings + new reading → get anomaly flag
 - Also available as MCP tool for AI-assisted monitoring
 
-We tested it against bearing failures, seal leaks, motor overloads, and voltage sags. It catches catastrophic failures reliably with zero false alarms. Subtle faults (like slow pressure leaks) sometimes slip through — that's the tradeoff for no false pages at 3am.
+We tested it against bearing failures, seal leaks, motor overloads, and voltage sags. It catches catastrophic failures reliably with high precision (0.90 avg across benchmarks). Subtle faults (like slow pressure leaks) sometimes slip through — that's the tradeoff for fewer false pages at 3am.
 
 Free tier: 10 scans/month, GPU-accelerated.
 `pip install WaveGuardClient`
