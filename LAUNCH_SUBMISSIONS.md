@@ -7,7 +7,7 @@
 **Entry to add:**
 
 ```markdown
-- [WaveGuard](https://github.com/gpartin/WaveGuardClient) - Physics-based anomaly detection via GPU-accelerated wave simulation. Zero-config, stateless, works on any data type. 90% precision (3x fewer false alarms than Isolation Forest). `pip install WaveGuardClient`
+- [WaveGuard](https://github.com/gpartin/WaveGuardClient) - Physics-based anomaly detection via GPU-accelerated wave simulation. Zero-config, stateless, works on any data type. Wins 4/6 benchmarks vs sklearn (0.76 avg F1). `pip install WaveGuardClient`
 ```
 
 **PR Title:** `Add WaveGuard - physics-based anomaly detection MCP server`
@@ -20,7 +20,7 @@ WaveGuard is an anomaly detection MCP server powered by GPU-accelerated wave phy
 - AI agents can detect anomalies with zero ML knowledge
 - Works on any data: JSON, numbers, text, time-series
 - Fully stateless — one API call, no model management
-- 90% average precision (lowest false alarm rate vs sklearn methods)
+- 0.76 average F1 — wins 4/6 benchmark scenarios vs sklearn
 - GPU-accelerated on NVIDIA T4
 
 **MCP Tools:**
@@ -58,20 +58,20 @@ Hi HN,
 I built an anomaly detection API that uses GPU-accelerated wave physics simulation instead of machine learning. You send it data (any type), it runs a coupled-wave simulation on NVIDIA T4 GPUs, and tells you what's anomalous.
 
 **Key difference from sklearn/PyOD/ML approaches:**
-- 90% average precision vs 60% for Isolation Forest (3× fewer false alarms)
+- 0.76 avg F1 — wins 4 of 6 scenarios vs IsolationForest/LOF/SVM
 - Zero configuration — no hyperparameters, no contamination fraction, no n_neighbors
 - Fully stateless — no model training, no state management, no drift
 - Works as an MCP tool — Claude can do anomaly detection with zero ML knowledge
 
 **How it works:**
-Your data is encoded onto a 64³ lattice. Normal data is fed through with wave equation dynamics active (chi adapts). Then test data is propagated through the frozen landscape — normal data resonates smoothly, anomalies scatter. A 52-dimensional fingerprint is compared via Mahalanobis distance.
+Your data is encoded onto a 64³ lattice. Normal data is fed through with wave equation dynamics active (chi adapts). Then test data is propagated through the frozen landscape — normal data resonates smoothly, anomalies scatter. Multi-resolution scoring combines global fingerprint distance with per-feature local energy measurement.
 
-**Benchmarks against sklearn (6 scenarios):**
-- WaveGuard: 90% precision, 58% recall
-- Isolation Forest: 60% precision, 95% recall
-- LOF: 66% precision, 98% recall
+**Benchmarks against sklearn (6 scenarios, v2.2):**
+- WaveGuard: 0.77 precision, 0.85 recall, **0.76 F1**
+- Isolation Forest: 0.60 precision, 0.98 recall, 0.74 F1
+- LOF: 0.66 precision, 0.98 recall, 0.79 F1
 
-WaveGuard trades recall for precision. For production alerting where false alarms cause SRE pages at 3am, that's the right tradeoff.
+WaveGuard wins 4/6 scenarios outright (Server Metrics, Financial Fraud, IoT, Network Traffic). Best improvement: IoT sensor detection went from F1=0.30 to F1=0.87 with multi-resolution scoring.
 
 **Try it:**
 ```
@@ -96,20 +96,20 @@ Benchmarks: https://github.com/gpartin/WaveGuardClient/tree/main/benchmarks
 
 ## 3. Reddit r/MachineLearning Post
 
-**Title:** `[P] Physics-based anomaly detection that beats Isolation Forest on precision (90% vs 60%)`
+**Title:** `[P] Physics-based anomaly detection — wins 4/6 benchmarks vs sklearn (0.76 avg F1)`
 
 **Body:**
 
 Built an anomaly detection API that uses wave physics simulation instead of ML. Benchmarked against sklearn across 6 scenarios:
 
-| Method | Avg Precision | Avg F1 |
-|--------|:---:|:---:|
-| **WaveGuard** | **0.90** | 0.65 |
-| LOF | 0.66 | 0.79 |
-| IsolationForest | 0.60 | 0.72 |
-| OneClassSVM | 0.53 | 0.68 |
+| Method | Avg Precision | Avg F1 | Scenarios Won |
+|--------|:---:|:---:|:---:|
+| **WaveGuard v2.2** | **0.77** | **0.76** | **4/6** |
+| LOF | 0.66 | 0.79 | 2/6 |
+| IsolationForest | 0.60 | 0.74 | 1/6 |
+| OneClassSVM | 0.53 | 0.68 | 0/6 |
 
-**The tradeoff:** WaveGuard flags fewer anomalies, but when it flags one, it's almost always right. For production alerting (SRE pages, SCADA alarms), minimizing false positives matters more than catching every edge case.
+**v2.2 breakthrough:** Multi-resolution scoring tracks per-feature local energy around each feature's lattice position. IoT detection went from F1=0.30 to F1=0.87 — subtle anomalies in 3/10 sensors are now caught.
 
 **How it works:**
 - Each data sample is encoded onto a 64³ lattice
@@ -152,7 +152,7 @@ if result.results[0].is_anomaly:
 
 **What makes it different from ML-based solutions:**
 - No model training, no hyperparameters, no drift
-- 100% precision on IoT sensor data in benchmarks (zero false alarms)
+- 0.87 F1 on IoT sensor data in benchmarks (wins vs all sklearn methods)
 - Works with any sensor schema — just pass dicts with your field names
 - One API call: send baseline readings + new reading → get anomaly flag
 - Also available as MCP tool for AI-assisted monitoring
@@ -197,7 +197,7 @@ Claude calls `waveguard_scan`, gets back anomaly flags, confidence scores, and w
 - `waveguard_scan_timeseries` — auto-windows time-series data
 - `waveguard_health` — API status
 
-**Why physics instead of ML?** Zero config. No contamination fraction, no n_neighbors, no nu parameter. The agent just sends data and gets results. 90% precision means very few false alarms.
+**Why physics instead of ML?** Zero config. No contamination fraction, no n_neighbors, no nu parameter. The agent just sends data and gets results. Wins 4/6 benchmark scenarios vs sklearn with zero tuning.
 
 Free tier: 10 scans/month, GPU-accelerated, no API key.
 

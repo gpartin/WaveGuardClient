@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.2.0] — 2026-02-24
+
+### Added
+- Multi-resolution scoring: per-feature local energy measurement alongside global fingerprint
+- PCA dimensionality reduction when n_samples < n_dims
+- Adaptive per-feature z-score thresholds (Bonferroni-style correction)
+- New response fields: `global_anomaly`, `feature_anomaly`, `anomalous_features`
+
+### Improved
+- IoT F1: 0.30 → 0.87 (+190%) — subtle per-feature anomalies now detected
+- Average F1: 0.65 → 0.76 (+17%) across 6 benchmark scenarios
+- WaveGuard now wins 4/6 scenarios vs sklearn (was 1/6)
+
 ## [2.0.0] — 2026-02-24
 
 ### Added

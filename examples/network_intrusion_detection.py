@@ -4,7 +4,7 @@ Network Intrusion Detection with WaveGuard
 ============================================
 
 WaveGuard outperforms Isolation Forest and LOF on network traffic
-anomaly detection (F1=0.84 vs 0.77 for LOF, 0.61 for IsolationForest).
+anomaly detection (F1=0.82 vs 0.77 for LOF, 0.61 for IsolationForest).
 
 This example shows how to integrate WaveGuard into a network
 monitoring pipeline. Works with NetFlow, firewall logs, or any
@@ -85,7 +85,7 @@ def simulate_attack(attack_type):
 def main():
     print("=" * 65)
     print("  Network Intrusion Detection with WaveGuard")
-    print("  Outperforms Isolation Forest (F1: 0.84 vs 0.61)")
+    print("  Outperforms Isolation Forest (F1: 0.82 vs 0.61)")
     print("=" * 65)
 
     wg = WaveGuard()

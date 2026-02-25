@@ -371,7 +371,7 @@ class MCPStdioServer:
     def __init__(self) -> None:
         self.server_info = {
             "name": "waveguard",
-            "version": "2.1.0",
+            "version": "2.2.0",
         }
 
     def handle_message(self, msg: dict) -> Optional[dict]:
@@ -435,7 +435,7 @@ class MCPStdioServer:
     def run_stdio(self) -> None:
         """Run the MCP server on stdin/stdout."""
         sys.stderr.write(
-            f"WaveGuard MCP server v2.1.0 started (API: {API_URL})\n"
+            f"WaveGuard MCP server v2.2.0 started (API: {API_URL})\n"
         )
         sys.stderr.flush()
 
@@ -470,7 +470,7 @@ def run_http_server(port: int = 3001) -> None:
         print("HTTP transport requires: pip install fastapi uvicorn")
         sys.exit(1)
 
-    mcp_app = FA(title="WaveGuard MCP Server", version="2.1.0")
+    mcp_app = FA(title="WaveGuard MCP Server", version="2.2.0")
     server = MCPStdioServer()
 
     @mcp_app.post("/mcp")
@@ -481,7 +481,7 @@ def run_http_server(port: int = 3001) -> None:
     async def mcp_tools() -> dict:  # type: ignore[type-arg]
         return {"tools": TOOLS}
 
-    print(f"WaveGuard MCP HTTP server v2.1.0 on port {port}")
+    print(f"WaveGuard MCP HTTP server v2.2.0 on port {port}")
     uvicorn.run(mcp_app, host="0.0.0.0", port=port)
 
 
@@ -491,7 +491,7 @@ def run_http_server(port: int = 3001) -> None:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="WaveGuard MCP Server v2.1.0"
+        description="WaveGuard MCP Server v2.2.0"
     )
     parser.add_argument(
         "--http",
