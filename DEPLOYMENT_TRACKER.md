@@ -41,6 +41,7 @@
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
 | Modal (API) | ✅ LIVE | v0.3.0 | 2026-02-25 | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
+| RapidAPI | ✅ LIVE | v0.3.0 | 2026-02-26 | `cryptoguard.p.rapidapi.com` — Free/Pro/Ultra tiers |
 | GitHub (Private) | ✅ CURRENT | v0.3.0 | 2026-02-25 | `gpartin/CryptoGuard` |
 
 ### CryptoGuardClient (Public SDK + MCP)
