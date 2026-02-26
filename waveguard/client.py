@@ -42,7 +42,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "3.1.0"
+__version__ = "3.2.0"
 
 logger = logging.getLogger("waveguard")
 
@@ -145,15 +145,17 @@ class FingerprintResult:
     Attributes
     ----------
     fingerprint : list[float]
-        52-dimensional physics embedding vector.
+        Physics embedding vector (52-dim at L0, 62-dim at L1).
     dimensions : int
-        Number of dimensions (typically 52).
+        Number of dimensions (52 at Level 0, 62 at Level 1).
     labels : list[str]
         Human-readable label for each dimension.
     encoder_type : str
         Encoder used to map input data onto the lattice.
     latency_ms : float
         Server-side processing time.
+    field_level : int
+        Field level used (0=real scalar, 1=complex).
     raw : dict
         Full JSON response.
     """
@@ -163,6 +165,7 @@ class FingerprintResult:
     labels: List[str]
     encoder_type: str
     latency_ms: float
+    field_level: int = 0
     raw: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -177,9 +180,9 @@ class CompareResult:
     distance : float
         Euclidean distance between fingerprints.
     fingerprint_a : list[float]
-        52-dim embedding of data_a.
-    fingerprint_b : list[float]
-        52-dim embedding of data_b.
+        Physics embedding of data_a.
+    fingerprint_b: List[float]
+        Physics embedding of data_b.
     dimensions : int
         Number of dimensions.
     encoder_type : str
@@ -266,6 +269,7 @@ class WaveGuard:
         test: List[Any],
         encoder_type: Optional[str] = None,
         sensitivity: Optional[float] = None,
+        field_level: int = 0,
     ) -> ScanResult:
         """Scan test data for anomalies against a training baseline.
 
@@ -282,11 +286,15 @@ class WaveGuard:
             1+ samples to check for anomalies.
         encoder_type : str, optional
             Force a specific encoder: ``"json"``, ``"numeric"``,
-            ``"text"``, ``"timeseries"``, ``"tabular"``.
+            ``"text"``, ``"timeseries"``, ``"tabular"``,
+            ``"complex_numeric"``.
             Leave *None* for auto-detection (recommended).
         sensitivity : float, optional
             Detection sensitivity in the range 0.5–3.0.
             Lower values are more sensitive (flag more anomalies).
+        field_level : int
+            Physics field complexity. 0 = real scalar (default).
+            1 = complex field (phase-aware, 62-dim fingerprints).
 
         Returns
         -------
@@ -302,6 +310,8 @@ class WaveGuard:
             body["encoder_type"] = encoder_type
         if sensitivity is not None:
             body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
 
         resp = self._post("/v1/scan", body)
         return self._parse_scan(resp, len(training), len(test))
@@ -310,8 +320,9 @@ class WaveGuard:
         self,
         data: Any,
         encoder_type: Optional[str] = None,
+        field_level: int = 0,
     ) -> FingerprintResult:
-        """Get a 52-dimensional physics embedding of any data item.
+        """Get a physics embedding of any data item.
 
         Parameters
         ----------
@@ -319,16 +330,21 @@ class WaveGuard:
             A single data item to fingerprint (JSON object, list, string, etc.).
         encoder_type : str, optional
             Force a specific encoder.  Leave *None* for auto-detection.
+        field_level : int
+            0 = real scalar (52-dim, default).
+            1 = complex field (62-dim, includes phase statistics).
 
         Returns
         -------
         FingerprintResult
-            ``.fingerprint`` is the 52-dim vector.
+            ``.fingerprint`` is the embedding vector (52 or 62 dims).
             ``.labels`` names each dimension.
         """
         body: Dict[str, Any] = {"data": data}
         if encoder_type is not None:
             body["encoder_type"] = encoder_type
+        if field_level:
+            body["field_level"] = field_level
 
         resp = self._post("/v1/fingerprint", body)
         return FingerprintResult(
@@ -337,6 +353,7 @@ class WaveGuard:
             labels=resp.get("labels", []),
             encoder_type=resp.get("encoder_type", "auto"),
             latency_ms=resp.get("latency_ms", 0.0),
+            field_level=resp.get("field_level", 0),
             raw=resp,
         )
 
