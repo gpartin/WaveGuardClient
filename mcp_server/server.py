@@ -492,7 +492,7 @@ def run_http_server(port: int = 3001) -> None:
 def main():
     """Entry point for `waveguard-mcp` console script."""
     parser = argparse.ArgumentParser(
-        description="WaveGuard MCP Server v2.3.0"
+        description="WaveGuard MCP Server v3.0.0"
     )
     parser.add_argument(
         "--http",
