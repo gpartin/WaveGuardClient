@@ -2,6 +2,37 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] — 2026-02-26
+
+### Added
+- **Live crypto market data**: New server endpoint `/v1/market/{action}` with
+  7 actions (token_data, price_history, ohlc, top_coins, search, dex_token,
+  dex_search) powered by CoinGecko and DexScreener
+- **10th MCP tool**: `waveguard_market_data` for AI agents to fetch live crypto prices
+- **Solana multi-chain support**: x402 payments now support 7 networks including
+  Solana mainnet (Base, Ethereum, Polygon, Arbitrum, Optimism, Solana)
+- **A2A protocol**: Google Agent-to-Agent discovery at `/.well-known/agent.json`
+  (protocol v0.3.0, 4 skills)
+- **Bazaar discovery**: x402 extensions now include JSON Schema `inputSchema`/`outputSchema`
+  for decentralized API marketplace discovery
+
+### Changed
+- Version bumped to 3.1.0 across all files and registries
+
+## [3.0.0] — 2026-02-25
+
+### Added
+- **Fingerprint endpoint** (`POST /v1/fingerprint`): Raw 52-dim physics embeddings
+- **Compare endpoint** (`POST /v1/compare`): Structural similarity between datasets
+- **5 crypto risk tools**: `token_risk`, `wallet_profile`, `volume_check`,
+  `price_manipulation`, `market_data` — all available via MCP
+- **x402 crypto payments**: Pay-per-call with USDC ($0.01/call) on Base mainnet
+- **6 MCP prompts**: Guided workflows for anomaly analysis, monitoring, crypto due diligence
+
+### Changed
+- MCP tools expanded from 3 to 9 (now 10 in 3.1.0)
+- Server architecture split: CPU web function + GPU compute function on Modal
+
 ## [2.3.0] — 2026-02-24
 
 ### Added

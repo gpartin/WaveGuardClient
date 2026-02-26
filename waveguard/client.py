@@ -42,7 +42,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "3.0.0"
+__version__ = "3.1.0"
 
 logger = logging.getLogger("waveguard")
 

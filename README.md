@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/pypi/v/WaveGuardClient?style=for-the-badge&color=blueviolet" alt="PyPI">
-  <img src="https://img.shields.io/badge/API-v2.2.0_stateless-brightgreen?style=for-the-badge" alt="v2.2.0">
+  <img src="https://img.shields.io/badge/API-v3.1.0_stateless-brightgreen?style=for-the-badge" alt="v3.1.0">
   <img src="https://img.shields.io/badge/GPU-CUDA_accelerated-76B900?style=for-the-badge&logo=nvidia" alt="CUDA">
   <img src="https://img.shields.io/badge/MCP-Claude_Desktop-orange?style=for-the-badge" alt="MCP">
   <a href="https://smithery.ai/servers/emergentphysicslab/waveguard"><img src="https://smithery.ai/badge/emergentphysicslab/waveguard" alt="Smithery"></a>

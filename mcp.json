@@ -8,14 +8,14 @@
     "source": "github"
   },
   "version_detail": {
-    "version": "2.2.0",
-    "release_date": "2026-02-24"
+    "version": "3.1.0",
+    "release_date": "2026-02-26"
   },
   "packages": [
     {
       "registry_name": "pypi",
       "name": "WaveGuardClient",
-      "version": "2.2.0"
+      "version": "3.1.0"
     }
   ],
   "remotes": [
