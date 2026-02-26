@@ -42,7 +42,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "2.3.0"
+__version__ = "3.0.0"
 
 logger = logging.getLogger("waveguard")
 
@@ -135,6 +135,68 @@ class TierInfo:
 
     tier: str
     limits: Dict[str, int]
+    raw: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class FingerprintResult:
+    """Result of a ``/v1/fingerprint`` call.
+
+    Attributes
+    ----------
+    fingerprint : list[float]
+        52-dimensional physics embedding vector.
+    dimensions : int
+        Number of dimensions (typically 52).
+    labels : list[str]
+        Human-readable label for each dimension.
+    encoder_type : str
+        Encoder used to map input data onto the lattice.
+    latency_ms : float
+        Server-side processing time.
+    raw : dict
+        Full JSON response.
+    """
+
+    fingerprint: List[float]
+    dimensions: int
+    labels: List[str]
+    encoder_type: str
+    latency_ms: float
+    raw: Dict[str, Any] = field(default_factory=dict)
+
+
+@dataclass
+class CompareResult:
+    """Result of a ``/v1/compare`` call.
+
+    Attributes
+    ----------
+    similarity : float
+        Cosine similarity (0–1).  >0.95 = very similar.
+    distance : float
+        Euclidean distance between fingerprints.
+    fingerprint_a : list[float]
+        52-dim embedding of data_a.
+    fingerprint_b : list[float]
+        52-dim embedding of data_b.
+    dimensions : int
+        Number of dimensions.
+    encoder_type : str
+        Encoder used.
+    latency_ms : float
+        Server-side processing time.
+    raw : dict
+        Full JSON response.
+    """
+
+    similarity: float
+    distance: float
+    fingerprint_a: List[float]
+    fingerprint_b: List[float]
+    dimensions: int
+    encoder_type: str
+    latency_ms: float
     raw: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -243,6 +305,79 @@ class WaveGuard:
 
         resp = self._post("/v1/scan", body)
         return self._parse_scan(resp, len(training), len(test))
+
+    def fingerprint(
+        self,
+        data: Any,
+        encoder_type: Optional[str] = None,
+    ) -> FingerprintResult:
+        """Get a 52-dimensional physics embedding of any data item.
+
+        Parameters
+        ----------
+        data : any
+            A single data item to fingerprint (JSON object, list, string, etc.).
+        encoder_type : str, optional
+            Force a specific encoder.  Leave *None* for auto-detection.
+
+        Returns
+        -------
+        FingerprintResult
+            ``.fingerprint`` is the 52-dim vector.
+            ``.labels`` names each dimension.
+        """
+        body: Dict[str, Any] = {"data": data}
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+
+        resp = self._post("/v1/fingerprint", body)
+        return FingerprintResult(
+            fingerprint=resp.get("fingerprint", []),
+            dimensions=resp.get("dimensions", 0),
+            labels=resp.get("labels", []),
+            encoder_type=resp.get("encoder_type", "auto"),
+            latency_ms=resp.get("latency_ms", 0.0),
+            raw=resp,
+        )
+
+    def compare(
+        self,
+        data_a: Any,
+        data_b: Any,
+        encoder_type: Optional[str] = None,
+    ) -> CompareResult:
+        """Compare two data items for structural similarity.
+
+        Parameters
+        ----------
+        data_a : any
+            First data item.
+        data_b : any
+            Second data item (same type as data_a).
+        encoder_type : str, optional
+            Force a specific encoder.  Leave *None* for auto-detection.
+
+        Returns
+        -------
+        CompareResult
+            ``.similarity`` is cosine similarity (0–1).
+            ``.distance`` is Euclidean distance.
+        """
+        body: Dict[str, Any] = {"data_a": data_a, "data_b": data_b}
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+
+        resp = self._post("/v1/compare", body)
+        return CompareResult(
+            similarity=resp.get("similarity", 0.0),
+            distance=resp.get("distance", 0.0),
+            fingerprint_a=resp.get("fingerprint_a", []),
+            fingerprint_b=resp.get("fingerprint_b", []),
+            dimensions=resp.get("dimensions", 0),
+            encoder_type=resp.get("encoder_type", "auto"),
+            latency_ms=resp.get("latency_ms", 0.0),
+            raw=resp,
+        )
 
     # ── Utility ───────────────────────────────────────────────────────
 
