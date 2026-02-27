@@ -10,7 +10,7 @@
 
 <p align="center">
   <strong>Anomaly detection powered by wave physics. Not machine learning.</strong><br>
-  One API call. Fully stateless. Works on any data type. Zero false alarms.
+  One API call. Fully stateless. Works on any data type.
 </p>
 
 <p align="center">
@@ -88,6 +88,20 @@ python benchmarks/benchmark_vs_sklearn.py
 Results saved to `benchmarks/benchmark_results.json`. Benchmarks use deterministic random seeds for reproducibility.
 
 </details>
+
+## Real-World Validation: Crypto Crash Detection
+
+WaveGuard powers [CryptoGuard](https://github.com/gpartin/CryptoGuard), a crypto risk scanner. Backtested against 7 historical crashes (LUNA, FTX, Celsius, 3AC, UST, SOL/FTX, TITAN):
+
+| Method | Recall | Avg Lead Time | False Positive Rate |
+|--------|--------|---------------|---------------------|
+| **WaveGuard** | **100% (7/7)** | **27.4 days** | **6.1%** |
+| Z-score baseline | 100% (7/7) | 28.4 days | 29.9% |
+| Rolling volatility | 86% (6/7) | 15.5 days | 4.0% |
+
+WaveGuard flagged FTT (FTX token) at CAUTION on October 16, 2022 — **23 days before the 94% crash** — while z-score analysis showed nothing unusual.
+
+5× fewer false alarms than statistical baselines with the same recall. Full results: [CryptoGuard backtest](https://github.com/gpartin/CryptoGuard/tree/main/backtest).
 
 ## Install
 
