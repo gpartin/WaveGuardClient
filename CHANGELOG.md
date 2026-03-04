@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.3.0] — 2026-03-01
+
+### Added
+- **Release prep automation script**: `scripts/prepare_pypi_release.ps1`
+  validates version/changelog parity, builds distributions, runs `twine check`,
+  and performs local wheel install/import smoke checks.
+- **PyPI operator checklist**: `docs/PYPI_RELEASE_CHECKLIST_v3.3.0.md`
+  with one-command prep and manual finalization steps.
+- **Advanced intelligence SDK methods** for direct `/v1/*` parity:
+  `counterfactual`, `trajectory_scan`, `instability`, `phase_coherence`,
+  `interaction_matrix`, `cascade_risk`, `mechanism_probe`,
+  `action_surface`, `multi_horizon_outlook`.
+
+### Changed
+- Version bumped to **3.3.0**.
+- Release metadata aligned to WaveGuard server **v3.3.0** deployment surface.
+
 ## [3.1.0] — 2026-02-26
 
 ### Added

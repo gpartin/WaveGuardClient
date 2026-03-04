@@ -1,6 +1,6 @@
 # Deployment & Submission Tracker
 
-**Last Updated**: 2026-02-26
+**Last Updated**: 2026-03-01 (Session 112)
 **Maintainer**: Greg Partin (@gpartin)
 
 ---
@@ -9,9 +9,9 @@
 
 | Product | Version | Type | Repo (Public) | Repo (Private) | API Endpoint |
 |---------|---------|------|---------------|----------------|-------------|
-| **WaveGuard** | v3.2.0 | Core Engine | — | gpartin/WaveGuard | `gpartin--waveguard-api-fastapi-app.modal.run` |
-| **WaveGuardClient** | v3.2.0 | Python SDK + MCP | gpartin/WaveGuardClient | — | (uses WaveGuard API) |
-| **CryptoGuard** | v0.3.0 | Crypto Validator | — | gpartin/CryptoGuard | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
+| **WaveGuard** | v3.3.0 | Core Engine | — | gpartin/WaveGuard | `gpartin--waveguard-api-fastapi-app.modal.run` |
+| **WaveGuardClient** | v3.3.0 | Python SDK + MCP | gpartin/WaveGuardClient | — | (uses WaveGuard API) |
+| **CryptoGuard** | v0.5.0 | Crypto Validator | — | gpartin/CryptoGuard | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
 | **CryptoGuardClient** | v0.3.0 | Python SDK + MCP | gpartin/CryptoGuardClient | — | (uses CryptoGuard API) |
 
 ---
@@ -22,27 +22,27 @@
 
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
-| Modal (API) | ✅ LIVE | v3.2.0 | 2026-02-25 | `gpartin--waveguard-api-fastapi-app.modal.run` |
-| GitHub (Private) | ✅ CURRENT | v3.2.0 | 2026-02-25 | `gpartin/WaveGuard` |
+| Modal (API) | ✅ LIVE | v3.3.0 | 2026-03-01 | Recovery completed; health/openapi/agent/mcp parity re-verified with automated gate |
+| GitHub (Private) | ✅ CURRENT | v3.3.0 | 2026-03-01 | `gpartin/WaveGuard` |
 
 ### WaveGuardClient (Public SDK + MCP)
 
 | Channel | Status | Version | Date | URL / ID | Notes |
 |---------|--------|---------|------|----------|-------|
-| GitHub | ✅ LIVE | v3.2.0 | 2026-02-25 | [gpartin/WaveGuardClient](https://github.com/gpartin/WaveGuardClient) | Public repo |
-| PyPI | ✅ LIVE | v3.2.0 | 2026-02-25 | [WaveGuardClient](https://pypi.org/project/WaveGuardClient/) | `pip install WaveGuardClient` |
-| awesome-mcp-servers | ✅ MERGED | — | 2026-02-26 | [PR #2378](https://github.com/punkpeye/awesome-mcp-servers/pull/2378) | Analytics category |
-| x402 Ecosystem | ✅ SUBMITTED | — | 2026-02-26 | [PR #1341](https://github.com/anthropics/x402/pull/1341) | Signed commit `6a39fa9` |
-| Smithery | ✅ LIVE | v3.2.0 | 2026-02-26 | [emergentphysicslab/waveguard](https://smithery.ai/server/emergentphysicslab/waveguard) | 100/100 quality score |
-| Glama | ✅ SUBMITTED | — | 2026-02-26 | — | Pending review |
+| GitHub | ✅ LIVE | v3.3.0 | 2026-03-01 | [gpartin/WaveGuardClient](https://github.com/gpartin/WaveGuardClient) | Public repo |
+| PyPI | ✅ LIVE | v3.3.0 | 2026-03-01 | [WaveGuardClient](https://pypi.org/project/WaveGuardClient/) | `pip install WaveGuardClient` |
+| awesome-mcp-servers | 🟡 OPEN | — | 2026-03-01 | [PR #2378](https://github.com/punkpeye/awesome-mcp-servers/pull/2378) | Glama-link requirement addressed; awaiting maintainer merge |
+| x402 Ecosystem | 🟡 OPEN | — | 2026-03-01 | [PR #1341](https://github.com/coinbase/x402/pull/1341) | Maintainer review gate: 0/1 approval currently shown |
+| Smithery | ✅ LIVE | v3.3.0 | 2026-03-01 | [emergentphysicslab/waveguard](https://smithery.ai/server/emergentphysicslab/waveguard) | 100/100 quality score |
+| Glama | 🟡 SUBMITTED | — | 2026-02-26 | — | Pending review |
 
 ### CryptoGuard (Crypto Validator — Private)
 
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
-| Modal (API) | ✅ LIVE | v0.3.0 | 2026-02-25 | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
-| RapidAPI | ✅ LIVE | v0.3.0 | 2026-02-26 | `cryptoguard.p.rapidapi.com` — Free/Pro/Ultra tiers |
-| GitHub (Private) | ✅ CURRENT | v0.3.0 | 2026-02-25 | `gpartin/CryptoGuard` |
+| Modal (API) | ✅ LIVE | v0.5.0 | 2026-03-01 | `gpartin--cryptoguard-api-fastapi-app.modal.run` (agent route normalization deployed) |
+| RapidAPI | 🟡 BEHIND | ~v0.3.0 | 2026-02-26 | Dashboard expected to lag latest endpoint surface until manual refresh |
+| GitHub (Private) | ✅ CURRENT | v0.5.0 | 2026-03-01 | `gpartin/CryptoGuard` |
 
 ### CryptoGuardClient (Public SDK + MCP)
 
@@ -51,10 +51,10 @@
 | GitHub | ✅ LIVE | v0.3.0 | 2026-02-26 | [gpartin/CryptoGuardClient](https://github.com/gpartin/CryptoGuardClient) | Public, 22 files, commit `f03248f` |
 | GitHub Release | ✅ CREATED | v0.3.0 | 2026-02-26 | [v0.3.0](https://github.com/gpartin/CryptoGuardClient/releases/tag/v0.3.0) | Triggers PyPI workflow |
 | PyPI | ✅ LIVE | v0.3.0 | 2026-02-26 | [CryptoGuardClient](https://pypi.org/project/CryptoGuardClient/) | `pip install CryptoGuardClient` |
-| awesome-mcp-servers | ✅ SUBMITTED | — | 2026-02-26 | [PR #2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440) | Finance & Fintech category |
-| x402 Ecosystem | ✅ SUBMITTED | — | 2026-02-26 | [PR #1358](https://github.com/anthropics/x402/pull/1358) | Signed commit `b58bd0b`, replied to @Must-be-Ash |
+| awesome-mcp-servers | 🟡 OPEN | — | 2026-03-01 | [PR #2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440) | Awaiting maintainer merge (no explicit requested changes visible) |
+| x402 Ecosystem | 🟡 OPEN | — | 2026-03-01 | [PR #1358](https://github.com/coinbase/x402/pull/1358) | Maintainer review gate: 0/1 approval currently shown |
 | Smithery | ✅ LIVE | v0.3.0 | 2026-02-26 | [emergentphysicslab/cryptoguard](https://smithery.ai/server/emergentphysicslab/cryptoguard) | 100/100 quality score |
-| Glama | ✅ SUBMITTED | — | 2026-02-26 | — | Pending review |
+| Glama | 🟡 SUBMITTED | — | 2026-02-26 | — | Pending review |
 
 ---
 
@@ -62,8 +62,14 @@
 
 ### ✅ COMPLETED: PyPI (Both Products)
 
-- **WaveGuardClient** v3.2.0 — LIVE on PyPI (2026-02-25)
+- **WaveGuardClient** v3.3.0 — LIVE on PyPI (2026-03-01)
 - **CryptoGuardClient** v0.3.0 — LIVE on PyPI (2026-02-26)
+
+### 🟢 Next PyPI bump playbook (when needed)
+
+- Prepare release with: `./scripts/prepare_pypi_release.ps1 -Version <next_version>`
+- Checklist: `docs/PYPI_RELEASE_CHECKLIST_v3.3.0.md`
+- Current package version in `pyproject.toml`: `3.3.0`
 
 ### ✅ COMPLETED: Smithery (Both Products)
 
@@ -75,10 +81,21 @@
 - **WaveGuard** — Submitted 2026-02-26, pending review
 - **CryptoGuard** — Submitted 2026-02-26, pending review
 
-### 🟡 Pending: PR Merges (Waiting on Maintainers)
+### 🟡 Pending: PR Merges (Distribution Parity Critical Path)
 
-- awesome-mcp-servers: PRs #2378 (WaveGuard) and #2440 (CryptoGuard) awaiting merge
-- x402 ecosystem: PRs #1341 (WaveGuard) and #1358 (CryptoGuard) awaiting merge
+- awesome-mcp-servers:
+    - [#2378](https://github.com/punkpeye/awesome-mcp-servers/pull/2378): requirement updates addressed (Glama link + wording), waiting maintainer merge.
+    - [#2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440): open and waiting maintainer merge.
+- x402 ecosystem:
+    - [#1341](https://github.com/coinbase/x402/pull/1341): commit signing and metadata refinements done; currently blocked on maintainer approval gate (0/1).
+    - [#1358](https://github.com/coinbase/x402/pull/1358): commit signing and metadata ordering updates done; currently blocked on maintainer approval gate (0/1).
+
+### 🔵 Distribution Parity Next Actions (48h Cadence)
+
+1. Post concise follow-up comments on all 4 open PRs with current live links + request for final maintainer merge/review.
+2. For x402 PRs, explicitly re-request review from current assignee/maintainer after signed-commit updates.
+3. Verify Glama listing status for both products and add direct listing URLs to trackers once approved.
+4. Re-audit PR states daily until both awesome and x402 entries are merged for WaveGuard and CryptoGuard.
 
 ### 🟢 Optional: Community Posts (When Ready)
 
@@ -92,10 +109,10 @@ See individual `LAUNCH_SUBMISSIONS.md` in each repo for pre-written posts:
 
 | PR | Repo | Title | Status | Date | Notes |
 |----|------|-------|--------|------|-------|
-| [#1341](https://github.com/anthropics/x402/pull/1341) | anthropics/x402 | Add WaveGuard to ecosystem | ✅ OPEN | 2026-02-26 | Signed commit `6a39fa9` |
-| [#1358](https://github.com/anthropics/x402/pull/1358) | anthropics/x402 | Add CryptoGuard to ecosystem | ✅ OPEN | 2026-02-26 | Signed commit `b58bd0b`, replied to reviewer |
-| [#2378](https://github.com/punkpeye/awesome-mcp-servers/pull/2378) | punkpeye/awesome-mcp-servers | Add WaveGuard | ✅ OPEN | 2026-02-26 | Analytics category |
-| [#2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440) | punkpeye/awesome-mcp-servers | Add CryptoGuard | ✅ OPEN | 2026-02-26 | Finance & Fintech category |
+| [#1341](https://github.com/coinbase/x402/pull/1341) | coinbase/x402 | Add WaveGuard to ecosystem | ✅ OPEN | 2026-03-01 | Blocker: required maintainer approval (0/1 shown) |
+| [#1358](https://github.com/coinbase/x402/pull/1358) | coinbase/x402 | Add CryptoGuard to ecosystem | ✅ OPEN | 2026-03-01 | Blocker: required maintainer approval (0/1 shown) |
+| [#2378](https://github.com/punkpeye/awesome-mcp-servers/pull/2378) | punkpeye/awesome-mcp-servers | Add WaveGuard | ✅ OPEN | 2026-03-01 | Glama requirement satisfied; waiting maintainer merge |
+| [#2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440) | punkpeye/awesome-mcp-servers | Add CryptoGuard | ✅ OPEN | 2026-03-01 | Waiting maintainer merge |
 
 ---
 
@@ -145,7 +162,7 @@ All commits in public repos are GPG-signed.
 │  (Private, Modal)    │◄────│  (Private, Modal)    │
 │  - GPU engine        │     │  - Validator engine   │
 │  - RTX 4060 / T4     │     │  - Uses WaveGuard    │
-│  - v3.2.0            │     │  - v0.3.0            │
+│  - v3.3.0            │     │  - v0.5.0            │
 └──────────────────────┘     └──────────────────────┘
 ```
 

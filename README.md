@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://img.shields.io/pypi/v/WaveGuardClient?style=for-the-badge&color=blueviolet" alt="PyPI">
-  <img src="https://img.shields.io/badge/API-v3.1.0_stateless-brightgreen?style=for-the-badge" alt="v3.1.0">
+    <img src="https://img.shields.io/badge/API-v3.3.0_stateless-brightgreen?style=for-the-badge" alt="v3.3.0">
   <img src="https://img.shields.io/badge/GPU-CUDA_accelerated-76B900?style=for-the-badge&logo=nvidia" alt="CUDA">
   <img src="https://img.shields.io/badge/MCP-Claude_Desktop-orange?style=for-the-badge" alt="MCP">
   <a href="https://smithery.ai/servers/emergentphysicslab/waveguard"><img src="https://smithery.ai/badge/emergentphysicslab/waveguard" alt="Smithery"></a>
@@ -35,6 +35,15 @@ Your data  →  WaveGuard API (GPU)  →  Anomaly scores + explanations
 ```
 
 Under the hood, it uses GPU-accelerated wave physics instead of machine learning. You don't need to know or care about the physics — it's all server-side.
+
+### Modal dashboard vs API endpoints
+
+If you look at Modal, you will see deployed **functions** (for example `fastapi_app`, `gpu_scan`, `gpu_fingerprint`).
+Those are compute/runtime units, not the HTTP route list.
+
+To see all live API endpoints, use:
+- OpenAPI docs: `https://gpartin--waveguard-api-fastapi-app.modal.run/docs`
+- OpenAPI JSON: `https://gpartin--waveguard-api-fastapi-app.modal.run/openapi.json`
 
 <details>
 <summary><strong>How does it actually work?</strong></summary>
@@ -285,6 +294,21 @@ Returns `ScanResult` with `.results` (per-sample) and `.summary` (aggregate).
 ### `wg.health()` / `wg.tier()`
 
 Health check (no auth) and subscription tier info.
+
+### Advanced intelligence methods (v3.3.0)
+
+- `wg.counterfactual(...)`
+- `wg.trajectory_scan(...)`
+- `wg.instability(...)`
+- `wg.phase_coherence(...)`
+- `wg.interaction_matrix(...)`
+- `wg.cascade_risk(...)`
+- `wg.mechanism_probe(...)`
+- `wg.action_surface(...)`
+- `wg.multi_horizon_outlook(...)`
+
+These map directly to `/v1/*` intelligence endpoints and return the raw JSON payload
+for maximal compatibility with rapidly evolving server-side response schemas.
 
 ### Error Handling
 

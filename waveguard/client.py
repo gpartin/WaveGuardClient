@@ -42,7 +42,7 @@ from .exceptions import (
     ServerError,
 )
 
-__version__ = "3.2.0"
+__version__ = "3.3.0"
 
 logger = logging.getLogger("waveguard")
 
@@ -395,6 +395,207 @@ class WaveGuard:
             latency_ms=resp.get("latency_ms", 0.0),
             raw=resp,
         )
+
+    def counterfactual(
+        self,
+        training: List[Any],
+        base_test: Any,
+        counterfactual_tests: List[Any],
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Run baseline + counterfactual variants under identical solver settings."""
+        body: Dict[str, Any] = {
+            "training": training,
+            "base_test": base_test,
+            "counterfactual_tests": counterfactual_tests,
+        }
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/counterfactual", body)
+
+    def trajectory_scan(
+        self,
+        training: List[Any],
+        sequence: List[Any],
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Analyze ordered sequence drift/regime shifts against training baseline."""
+        body: Dict[str, Any] = {"training": training, "sequence": sequence}
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/trajectory_scan", body)
+
+    def instability(
+        self,
+        training: List[Any],
+        test: List[Any],
+        trials: int = 12,
+        perturbation_strength: float = 0.02,
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Estimate instability under controlled perturb-and-resolve trials."""
+        body: Dict[str, Any] = {
+            "training": training,
+            "test": test,
+            "trials": trials,
+            "perturbation_strength": perturbation_strength,
+        }
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/instability", body)
+
+    def phase_coherence(
+        self,
+        training: List[Any],
+        test: List[Any],
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 1,
+    ) -> Dict[str, Any]:
+        """Measure phase coherence, entropy, and collapse-risk indicators."""
+        body: Dict[str, Any] = {"training": training, "test": test, "field_level": field_level}
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        return self._post("/v1/phase_coherence", body)
+
+    def interaction_matrix(
+        self,
+        training_context: List[Any],
+        entities: List[Any],
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 1,
+    ) -> Dict[str, Any]:
+        """Compute pairwise interaction matrix and cluster decomposition."""
+        body: Dict[str, Any] = {
+            "training_context": training_context,
+            "entities": entities,
+            "field_level": field_level,
+        }
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        return self._post("/v1/interaction_matrix", body)
+
+    def cascade_risk(
+        self,
+        training_context: List[Any],
+        entities: List[Any],
+        adjacency_matrix: List[List[float]],
+        shock_indices: List[int],
+        shock_strength: float = 0.05,
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 1,
+    ) -> Dict[str, Any]:
+        """Estimate cascade depth/velocity and resilience rankings."""
+        body: Dict[str, Any] = {
+            "training_context": training_context,
+            "entities": entities,
+            "adjacency_matrix": adjacency_matrix,
+            "shock_indices": shock_indices,
+            "shock_strength": shock_strength,
+            "field_level": field_level,
+        }
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        return self._post("/v1/cascade_risk", body)
+
+    def mechanism_probe(
+        self,
+        training: List[Any],
+        base_test: Any,
+        intervention_tests: List[Any],
+        intervention_labels: Optional[List[str]] = None,
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Run intervention variants and rank inferred causal influence."""
+        body: Dict[str, Any] = {
+            "training": training,
+            "base_test": base_test,
+            "intervention_tests": intervention_tests,
+        }
+        if intervention_labels is not None:
+            body["intervention_labels"] = intervention_labels
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/mechanism_probe", body)
+
+    def action_surface(
+        self,
+        training: List[Any],
+        action_tests: List[Any],
+        action_labels: Optional[List[str]] = None,
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Score candidate actions and extract robust/pareto selections."""
+        body: Dict[str, Any] = {
+            "training": training,
+            "action_tests": action_tests,
+        }
+        if action_labels is not None:
+            body["action_labels"] = action_labels
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/action_surface", body)
+
+    def multi_horizon_outlook(
+        self,
+        training: List[Any],
+        sequence: List[Any],
+        horizons: List[int],
+        encoder_type: Optional[str] = None,
+        sensitivity: Optional[float] = None,
+        field_level: int = 0,
+    ) -> Dict[str, Any]:
+        """Compute horizon-specific anomaly outlook and consistency."""
+        body: Dict[str, Any] = {
+            "training": training,
+            "sequence": sequence,
+            "horizons": horizons,
+        }
+        if encoder_type is not None:
+            body["encoder_type"] = encoder_type
+        if sensitivity is not None:
+            body["sensitivity"] = sensitivity
+        if field_level:
+            body["field_level"] = field_level
+        return self._post("/v1/multi_horizon_outlook", body)
 
     # ── Utility ───────────────────────────────────────────────────────
 
