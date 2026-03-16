@@ -39,8 +39,8 @@
 | 22 | `/v1/agent/langchain` | GET | Discovery | No | v3.3.0 |
 | 23 | `/v1/analytics/mcp` | POST | Analytics | No | v3.3.0 |
 | **WaveGuardClient** | v3.3.0 | Python SDK + MCP | gpartin/WaveGuardClient | — | (uses WaveGuard API) |
-| **CryptoGuard** | v0.5.0 | Crypto Validator | — | gpartin/CryptoGuard | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
-| **CryptoGuardClient** | v0.3.0 | Python SDK + MCP | gpartin/CryptoGuardClient | — | (uses CryptoGuard API) |
+| **CryptoGuard** | v0.6.0 | Crypto Validator | — | gpartin/CryptoGuard | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
+| **CryptoGuardClient** | v0.6.0 | Python SDK + MCP | gpartin/CryptoGuardClient | — | (uses CryptoGuard API) |
 
 ---
 
@@ -68,17 +68,17 @@
 
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
-| Modal (API) | ✅ LIVE | v0.5.0 | 2026-03-01 | `gpartin--cryptoguard-api-fastapi-app.modal.run` (agent route normalization deployed) |
+| Modal (API) | ✅ LIVE | v0.6.0 | 2026-03-16 | `gpartin--cryptoguard-api-fastapi-app.modal.run` (30 endpoints, 7 MCP tools, Physics Intelligence + Intel) |
 | RapidAPI | 🟡 BEHIND | ~v2.0.0 | 2026-03-01 | [waveguard](https://rapidapi.com/gpartin/api/waveguard) | OpenAPI spec ready (`openapi_rapidapi.json`), needs manual dashboard import. See `docs/RAPIDAPI_PUBLISH_CHECKLIST_v3.3.0.md` |
-| GitHub (Private) | ✅ CURRENT | v0.5.0 | 2026-03-01 | `gpartin/CryptoGuard` |
+| GitHub (Private) | ✅ CURRENT | v0.6.0 | 2026-03-16 | `gpartin/CryptoGuard` |
 
 ### CryptoGuardClient (Public SDK + MCP)
 
 | Channel | Status | Version | Date | URL / ID | Notes |
 |---------|--------|---------|------|----------|-------|
-| GitHub | ✅ LIVE | v0.3.0 | 2026-02-26 | [gpartin/CryptoGuardClient](https://github.com/gpartin/CryptoGuardClient) | Public, 22 files, commit `f03248f` |
-| GitHub Release | ✅ CREATED | v0.3.0 | 2026-02-26 | [v0.3.0](https://github.com/gpartin/CryptoGuardClient/releases/tag/v0.3.0) | Triggers PyPI workflow |
-| PyPI | ✅ LIVE | v0.3.0 | 2026-02-26 | [CryptoGuardClient](https://pypi.org/project/CryptoGuardClient/) | `pip install CryptoGuardClient` |
+| GitHub | 🟡 PENDING PUSH | v0.6.0 | 2026-03-16 | [gpartin/CryptoGuardClient](https://github.com/gpartin/CryptoGuardClient) | 30 endpoints, 7 MCP tools |
+| GitHub Release | ⬜ NEEDED | v0.6.0 | — | — | Create after push to trigger PyPI |
+| PyPI | ⬜ NEEDED | v0.6.0 | — | [CryptoGuardClient](https://pypi.org/project/CryptoGuardClient/) | `pip install CryptoGuardClient` |
 | awesome-mcp-servers | 🟡 OPEN | — | 2026-03-01 | [PR #2440](https://github.com/punkpeye/awesome-mcp-servers/pull/2440) | Awaiting maintainer merge (no explicit requested changes visible) |
 | x402 Ecosystem | 🟡 OPEN | — | 2026-03-01 | [PR #1358](https://github.com/coinbase/x402/pull/1358) | Maintainer review gate: 0/1 approval currently shown |
 | Smithery | ✅ LIVE | v0.3.0 | 2026-02-26 | [emergentphysicslab/cryptoguard](https://smithery.ai/server/emergentphysicslab/cryptoguard) | 100/100 quality score |
