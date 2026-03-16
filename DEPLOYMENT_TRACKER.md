@@ -1,6 +1,6 @@
 # Deployment & Submission Tracker
 
-**Last Updated**: 2026-03-01 (Session 112)
+**Last Updated**: 2026-03-16 (Session 128)  
 **Maintainer**: Greg Partin (@gpartin)
 
 ---
@@ -10,6 +10,34 @@
 | Product | Version | Type | Repo (Public) | Repo (Private) | API Endpoint |
 |---------|---------|------|---------------|----------------|-------------|
 | **WaveGuard** | v3.3.0 | Core Engine | — | gpartin/WaveGuard | `gpartin--waveguard-api-fastapi-app.modal.run` |
+
+**Live Endpoints (23 total, as of 2026-03-16):**
+
+| # | Endpoint | Method | Category | GPU | Added |
+|---|----------|--------|----------|-----|-------|
+| 1 | `/v1/scan` | POST | Anomaly Detection | Yes | v1.0.0 |
+| 2 | `/v1/fingerprint` | POST | Anomaly Detection | Yes | v2.5.0 |
+| 3 | `/v1/compare` | POST | Anomaly Detection | Yes | v2.5.0 |
+| 4 | `/v1/trajectory_scan` | POST | Intelligence | Yes | v3.3.0 |
+| 5 | `/v1/phase_coherence` | POST | Intelligence | Yes | v3.3.0 |
+| 6 | `/v1/instability` | POST | Intelligence | Yes | v3.3.0 |
+| 7 | `/v1/interaction_matrix` | POST | Intelligence | Yes | v3.3.0 |
+| 8 | `/v1/cascade_risk` | POST | Intelligence | Yes | v3.3.0 |
+| 9 | `/v1/counterfactual` | POST | Intelligence | Yes | v3.3.0 |
+| 10 | `/v1/mechanism_probe` | POST | Intelligence | Yes | v3.3.0 |
+| 11 | `/v1/action_surface` | POST | Intelligence | Yes | v3.3.0 |
+| 12 | `/v1/multi_horizon_outlook` | POST | Intelligence | Yes | v3.3.0 |
+| 13 | `/v1/spectral_analyze` | POST | Intelligence (Lightweight) | No | v3.3.0+ |
+| 14 | `/v1/wave_solve` | POST | Intelligence (Lightweight) | No | v3.3.0+ |
+| 15 | `/v1/biorhythm` | POST | Intelligence (Lightweight) | No | v3.3.0+ |
+| 16 | `/v1/market/{action}` | GET | Market Data | No | v3.0.0 |
+| 17 | `/v1/health` | GET | System | No | v1.0.0 |
+| 18 | `/v1/tier` | GET | System | No | v2.0.0 |
+| 19 | `/v1/pricing` | GET | System | No | v3.0.0 |
+| 20 | `/v1/agent/tools` | GET | Discovery | No | v3.3.0 |
+| 21 | `/v1/agent/mcp` | GET | Discovery | No | v3.3.0 |
+| 22 | `/v1/agent/langchain` | GET | Discovery | No | v3.3.0 |
+| 23 | `/v1/analytics/mcp` | POST | Analytics | No | v3.3.0 |
 | **WaveGuardClient** | v3.3.0 | Python SDK + MCP | gpartin/WaveGuardClient | — | (uses WaveGuard API) |
 | **CryptoGuard** | v0.5.0 | Crypto Validator | — | gpartin/CryptoGuard | `gpartin--cryptoguard-api-fastapi-app.modal.run` |
 | **CryptoGuardClient** | v0.3.0 | Python SDK + MCP | gpartin/CryptoGuardClient | — | (uses CryptoGuard API) |
@@ -22,7 +50,7 @@
 
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
-| Modal (API) | ✅ LIVE | v3.3.0 | 2026-03-01 | Recovery completed; health/openapi/agent/mcp parity re-verified with automated gate |
+| Modal (API) | ✅ LIVE | v3.3.0 | 2026-03-16 | 23 endpoints live (3 new: biorhythm, spectral_analyze, wave_solve) |
 | GitHub (Private) | ✅ CURRENT | v3.3.0 | 2026-03-01 | `gpartin/WaveGuard` |
 
 ### WaveGuardClient (Public SDK + MCP)
@@ -41,7 +69,7 @@
 | Channel | Status | Version | Date | Notes |
 |---------|--------|---------|------|-------|
 | Modal (API) | ✅ LIVE | v0.5.0 | 2026-03-01 | `gpartin--cryptoguard-api-fastapi-app.modal.run` (agent route normalization deployed) |
-| RapidAPI | 🟡 BEHIND | ~v0.3.0 | 2026-02-26 | Dashboard expected to lag latest endpoint surface until manual refresh |
+| RapidAPI | 🟡 BEHIND | ~v2.0.0 | 2026-03-01 | [waveguard](https://rapidapi.com/gpartin/api/waveguard) | OpenAPI spec ready (`openapi_rapidapi.json`), needs manual dashboard import. See `docs/RAPIDAPI_PUBLISH_CHECKLIST_v3.3.0.md` |
 | GitHub (Private) | ✅ CURRENT | v0.5.0 | 2026-03-01 | `gpartin/CryptoGuard` |
 
 ### CryptoGuardClient (Public SDK + MCP)
@@ -139,6 +167,7 @@ All commits in public repos are GPG-signed.
 
 | Version | Date | Changes |
 |---------|------|---------|
+| v3.3.0+ | 2026-03-16 | 3 new lightweight endpoints: biorhythm, spectral_analyze, wave_solve (server-side, no SDK update needed) |
 | v3.2.0 | 2026-02-25 | Level 1 (Complex Ψ) support. 62-dim fingerprint, complex field encoding, phase-based charge. |
 | v3.1.0 | 2026-02-24 | Multi-resolution scoring, time-series auto-windowing. |
 | v3.0.0 | 2026-02-23 | MCP server integration, stdio + HTTP transports. |
