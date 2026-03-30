@@ -368,3 +368,8 @@ pytest
 ## License
 
 MIT — see [LICENSE](LICENSE).
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/gpartin-waveguardclient).
+
