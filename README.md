@@ -98,6 +98,8 @@ Results saved to `benchmarks/benchmark_results.json`. Benchmarks use determinist
 
 </details>
 
+> **Expanded benchmarks**: WaveGuard ranks #1 in F1 score on all 12 public benchmark datasets. See the full comparison on [HuggingFace](https://huggingface.co/datasets/emergentphysicslab/waveguard-benchmarks).
+
 ## Real-World Validation: Crypto Crash Detection
 
 WaveGuard powers [CryptoGuard](https://github.com/gpartin/CryptoGuard), a crypto risk scanner. Backtested against 7 historical crashes (LUNA, FTX, Celsius, 3AC, UST, SOL/FTX, TITAN):
@@ -119,6 +121,8 @@ pip install WaveGuardClient
 ```
 
 That's it. The only dependency is `requests`. All physics runs server-side on GPU.
+
+**[Get your free API key on RapidAPI →](https://rapidapi.com/gpartin/api/waveguard)**
 
 ## Quickstart
 
@@ -360,10 +364,12 @@ pytest
 
 ## Links
 
+- **RapidAPI** (get your API key): https://rapidapi.com/gpartin/api/waveguard
 - **Live API**: https://gpartin--waveguard-api-fastapi-app.modal.run
 - **Interactive Docs (Swagger)**: https://gpartin--waveguard-api-fastapi-app.modal.run/docs
 - **PyPI**: https://pypi.org/project/WaveGuardClient/
 - **Smithery**: https://smithery.ai/servers/emergentphysicslab/waveguard
+- **Glama**: https://glama.ai/mcp/connectors/com.emergentphysicslab/waveguard
 
 ## License
 
